@@ -1,0 +1,11 @@
+{
+  "name": "kcr-submission-manager",
+  "version": "1.0.0",
+  "description": "KCR Literary Magazine Submission Manager — Frontend Template",
+  "scripts": {
+    "start": "live-server --port=3000 --open=html/index.html"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

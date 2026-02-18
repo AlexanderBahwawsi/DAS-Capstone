@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KCR — Messages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .msg-layout { display: flex; gap: 0; height: calc(100vh - var(--header-height) - 4rem); min-height: 500px; }
+    .msg-threads { width: 320px; border-right: 1px solid var(--border); display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius-lg) 0 0 var(--radius-lg); overflow: hidden; }
+    .msg-threads-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .msg-threads-list { flex: 1; overflow-y: auto; }
+    .thread-item { display: flex; gap: .75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background var(--transition); }
+    .thread-item:hover, .thread-item.active { background: var(--primary-light); }
+    .thread-item .thread-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: .8rem; flex-shrink: 0; }
+    .thread-item .thread-info { flex: 1; min-width: 0; }
+    .thread-item .thread-title { font-weight: 600; font-size: .85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .thread-item .thread-preview { font-size: .78rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .thread-item .thread-meta { display: flex; justify-content: space-between; align-items: center; margin-top: .2rem; }
+    .thread-item .thread-time { font-size: .7rem; color: var(--text-light); }
+    .thread-item .unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+
+    .msg-conversation { flex: 1; display: flex; flex-direction: column; background: var(--surface); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; overflow: hidden; }
+    .msg-conv-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .msg-conv-body { flex: 1; padding: 1.5rem; overflow-y: auto; }
+    .msg-conv-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: .75rem; }
+    .msg-conv-footer input { flex: 1; padding: .65rem .9rem; border: 1px solid var(--border); border-radius: var(--radius); font-family: inherit; font-size: .875rem; }
+    .msg-conv-footer input:focus { outline: none; border-color: var(--primary); }
+
+    .chat-msg { display: flex; gap: .75rem; margin-bottom: 1.25rem; }
+    .chat-msg.own { flex-direction: row-reverse; }
+    .chat-msg .chat-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: .75rem; flex-shrink: 0; }
+    .chat-msg .chat-bubble { max-width: 70%; padding: .75rem 1rem; border-radius: var(--radius-lg); font-size: .875rem; line-height: 1.5; }
+    .chat-msg:not(.own) .chat-bubble { background: var(--surface-alt); }
+    .chat-msg.own .chat-bubble { background: var(--primary); color: #fff; }
+    .chat-msg .chat-time { font-size: .7rem; color: var(--text-light); margin-top: .3rem; }
+    .chat-msg.own .chat-time { text-align: right; }
+
+    @media (max-width: 768px) {
+      .msg-threads { width: 100%; border-radius: var(--radius-lg); }
+      .msg-conversation { display: none; }
+      .msg-layout { flex-direction: column; height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo">KCR</div>
+        <div>
+          <h2>KCR Manager</h2>
+          <small>Submission Portal</small>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">Main</div>
+        <a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a>
+        <a href="submissions.html"><span class="icon">&#9998;</span> My Submissions</a>
+        <a href="submit.html"><span class="icon">&#10010;</span> New Submission</a>
+        <div class="nav-section">Review</div>
+        <a href="review-queue.html"><span class="icon">&#128220;</span> Review Queue</a>
+        <a href="messages.html" class="active"><span class="icon">&#9993;</span> Messages</a>
+        <div class="nav-section">Administration</div>
+        <a href="admin.html"><span class="icon">&#9881;</span> Admin Panel</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="avatar">JD</div>
+        <div class="user-info">
+          <div class="name">Jane Doe</div>
+          <div class="role">Submitter</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+      <header class="top-bar">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+          <span class="page-title">Messages</span>
+        </div>
+        <div class="top-bar-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="msg-layout" style="border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);">
+          <!-- Thread List -->
+          <div class="msg-threads">
+            <div class="msg-threads-header">
+              <div class="search-input" style="min-width:auto;">
+                <span class="search-icon">&#128269;</span>
+                <input type="text" placeholder="Search messages..." style="width:100%;">
+              </div>
+            </div>
+            <div class="msg-threads-list">
+              <div class="thread-item active">
+                <div class="thread-avatar" style="background:var(--success);">EJ</div>
+                <div class="thread-info">
+                  <div class="thread-title">#KCR-0039 — The Glass Garden</div>
+                  <div class="thread-preview">Editor Jones: Agreed. This has real potential...</div>
+                  <div class="thread-meta">
+                    <span class="thread-time">Feb 13</span>
+                    <span class="unread-dot"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="thread-item">
+                <div class="thread-avatar">RS</div>
+                <div class="thread-info">
+                  <div class="thread-title">#KCR-0035 — Urban Solitude</div>
+                  <div class="thread-preview">Congratulations! Your piece has been accepted...</div>
+                  <div class="thread-meta">
+                    <span class="thread-time">Feb 1</span>
+                  </div>
+                </div>
+              </div>
+              <div class="thread-item">
+                <div class="thread-avatar" style="background:var(--warning);">AD</div>
+                <div class="thread-info">
+                  <div class="thread-title">#KCR-0028 — Midnight Trains</div>
+                  <div class="thread-preview">Thank you for your submission. Unfortunately...</div>
+                  <div class="thread-meta">
+                    <span class="thread-time">Jan 25</span>
+                  </div>
+                </div>
+              </div>
+              <div class="thread-item">
+                <div class="thread-avatar" style="background:#7c3aed;">SY</div>
+                <div class="thread-info">
+                  <div class="thread-title">#KCR-0031 — Echoes in Concrete</div>
+                  <div class="thread-preview">Beautiful work! We'd like to feature this in...</div>
+                  <div class="thread-meta">
+                    <span class="thread-time">Jan 22</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Conversation View -->
+          <div class="msg-conversation">
+            <div class="msg-conv-header">
+              <div>
+                <strong style="font-size:.9rem;">#KCR-0039 — The Glass Garden</strong>
+                <div class="text-small text-muted">Discussion between editors &amp; reviewers</div>
+              </div>
+              <a href="submission-detail.html" class="btn btn-secondary btn-sm">View Submission</a>
+            </div>
+
+            <div class="msg-conv-body">
+              <div class="chat-msg">
+                <div class="chat-avatar" style="background:var(--primary);">RS</div>
+                <div>
+                  <div class="chat-bubble">Strong opening. The imagery in the first two paragraphs is exceptional. I'd like to see how the ending resolves before making my final recommendation.</div>
+                  <div class="chat-time">Feb 12, 2026 &bull; 10:24 AM</div>
+                </div>
+              </div>
+
+              <div class="chat-msg">
+                <div class="chat-avatar" style="background:var(--success);">EJ</div>
+                <div>
+                  <div class="chat-bubble">Agreed. This has real potential. The glass metaphor is handled with sophistication — it doesn't feel heavy-handed. Let's discuss at the next meeting.</div>
+                  <div class="chat-time">Feb 13, 2026 &bull; 2:15 PM</div>
+                </div>
+              </div>
+
+              <div class="chat-msg">
+                <div class="chat-avatar" style="background:var(--primary);">RS</div>
+                <div>
+                  <div class="chat-bubble">I finished reading the full piece. The ending is unexpected but satisfying. I'm giving it 4 stars. My only concern is the pacing in sections 3 and 4 could be tightened.</div>
+                  <div class="chat-time">Feb 14, 2026 &bull; 9:47 AM</div>
+                </div>
+              </div>
+
+              <div class="chat-msg own">
+                <div class="chat-avatar" style="background:var(--primary);">JD</div>
+                <div>
+                  <div class="chat-bubble">Thank you both for the feedback! I'm happy to revise sections 3 and 4 if that would help. Should I submit an updated version?</div>
+                  <div class="chat-time">Feb 14, 2026 &bull; 11:30 AM</div>
+                </div>
+              </div>
+
+              <div class="chat-msg">
+                <div class="chat-avatar" style="background:var(--success);">EJ</div>
+                <div>
+                  <div class="chat-bubble">That would be great. Please submit the revision as a new file attachment on the original submission. We'll review the updated version at our meeting on Feb 20th.</div>
+                  <div class="chat-time">Feb 14, 2026 &bull; 3:02 PM</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="msg-conv-footer">
+              <input type="text" placeholder="Type your message...">
+              <button class="btn btn-primary">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+</body>
+</html>

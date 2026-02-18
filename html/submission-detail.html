@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KCR — Submission Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo">KCR</div>
+        <div>
+          <h2>KCR Manager</h2>
+          <small>Submission Portal</small>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">Main</div>
+        <a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a>
+        <a href="submissions.html"><span class="icon">&#9998;</span> My Submissions</a>
+        <a href="submit.html"><span class="icon">&#10010;</span> New Submission</a>
+        <div class="nav-section">Review</div>
+        <a href="review-queue.html"><span class="icon">&#128220;</span> Review Queue</a>
+        <a href="messages.html"><span class="icon">&#9993;</span> Messages</a>
+        <div class="nav-section">Administration</div>
+        <a href="admin.html"><span class="icon">&#9881;</span> Admin Panel</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="avatar">JD</div>
+        <div class="user-info">
+          <div class="name">Jane Doe</div>
+          <div class="role">Submitter</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+      <header class="top-bar">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+          <span class="page-title">
+            <a href="submissions.html" style="color:var(--text-muted);font-weight:500;">&larr; Back</a>
+            &nbsp; Submission #KCR-0039
+          </span>
+        </div>
+        <div class="top-bar-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Document Viewer Layout -->
+        <div class="doc-viewer">
+          <!-- Left: In-Browser Preview -->
+          <div class="doc-preview">
+            <div class="doc-preview-header">
+              <div>
+                <strong style="font-size:.9rem;">The Glass Garden</strong>
+                <span class="text-small text-muted" style="margin-left:.75rem;">the-glass-garden.pdf</span>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-secondary btn-sm">&#8722; Zoom</button>
+                <button class="btn btn-secondary btn-sm">&#43; Zoom</button>
+                <button class="btn btn-secondary btn-sm">&#128438; Download</button>
+              </div>
+            </div>
+            <div class="doc-preview-body">
+              <div style="max-width:600px;margin:0 auto;">
+                <h2 style="text-align:center;margin-bottom:2rem;font-family:Georgia,serif;">The Glass Garden</h2>
+                <p style="font-family:Georgia,serif;text-indent:2rem;">
+                  The garden had always been there, or so Elena believed. Tucked behind the crumbling stone wall of her grandmother's estate, it existed in a state of perpetual twilight, as if the sun itself had forgotten this particular corner of the world.
+                </p>
+                <p style="font-family:Georgia,serif;text-indent:2rem;margin-top:1rem;">
+                  She discovered it on a Tuesday in late October, when the maples had surrendered their last leaves and the air carried the sharp promise of frost. The gate was iron, rusted into a permanent half-open position, and beyond it stretched rows of impossible flowers &mdash; roses, lilies, orchids &mdash; all rendered in glass so fine it caught the fading light and scattered it into constellations across the frozen earth.
+                </p>
+                <p style="font-family:Georgia,serif;text-indent:2rem;margin-top:1rem;">
+                  "Grandmother never mentioned this," Elena whispered, reaching out to touch a translucent petal. It was warm beneath her fingertips, humming with something that might have been life. The glass was not cold and dead as she had expected. It pulsed with color: deep crimsons that shifted to violet, golds that rippled into copper, greens so vivid they put the memory of summer to shame.
+                </p>
+                <p style="font-family:Georgia,serif;text-indent:2rem;margin-top:1rem;">
+                  She walked deeper into the garden, her boots crunching on gravel paths that wound between beds of crystalline blooms. A fountain stood at the center, its basin filled not with water but with liquid light &mdash; mercury-bright and slow-moving, reflecting a sky that didn't match the one above...
+                </p>
+                <p style="text-align:center;color:var(--text-light);margin-top:2rem;font-style:italic;">
+                  [Document preview continues — 12 pages total]
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Sidebar Info -->
+          <div class="doc-sidebar">
+            <!-- Submission Info -->
+            <div class="card">
+              <div class="card-header">
+                <h4>Submission Details</h4>
+                <span class="badge badge-review">In Review</span>
+              </div>
+              <div class="card-body">
+                <div style="display:grid;gap:.75rem;">
+                  <div>
+                    <div class="text-small text-muted">Submission ID</div>
+                    <div style="font-weight:600;">#KCR-0039</div>
+                  </div>
+                  <div>
+                    <div class="text-small text-muted">Title</div>
+                    <div style="font-weight:600;">The Glass Garden</div>
+                  </div>
+                  <div>
+                    <div class="text-small text-muted">Genre</div>
+                    <div>Short Fiction</div>
+                  </div>
+                  <div>
+                    <div class="text-small text-muted">Word Count</div>
+                    <div>4,200</div>
+                  </div>
+                  <div>
+                    <div class="text-small text-muted">Submitted</div>
+                    <div>February 5, 2026</div>
+                  </div>
+                  <div>
+                    <div class="text-small text-muted">Files</div>
+                    <div class="file-item" style="margin-top:.25rem;">
+                      <span>&#128196;</span>
+                      <span class="file-name">the-glass-garden.pdf</span>
+                      <span class="file-size">248 KB</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rating (Reviewer view) -->
+            <div class="card">
+              <div class="card-header"><h4>Your Rating</h4></div>
+              <div class="card-body">
+                <div class="rating" id="ratingStars">
+                  <span class="star" data-val="1">&#9733;</span>
+                  <span class="star" data-val="2">&#9733;</span>
+                  <span class="star" data-val="3">&#9733;</span>
+                  <span class="star" data-val="4">&#9733;</span>
+                  <span class="star" data-val="5">&#9733;</span>
+                </div>
+                <textarea class="form-control" rows="3" placeholder="Add your review comments..." style="margin-top:.75rem;"></textarea>
+                <button class="btn btn-primary btn-sm" style="margin-top:.75rem;">Submit Review</button>
+              </div>
+            </div>
+
+            <!-- Decision (Editor/Admin) -->
+            <div class="card">
+              <div class="card-header"><h4>Decision</h4></div>
+              <div class="card-body">
+                <div class="btn-group" style="flex-wrap:wrap;">
+                  <button class="btn btn-success btn-sm" onclick="setDecision('accepted',this)">&#10004; Accept</button>
+                  <button class="btn btn-danger btn-sm" onclick="setDecision('rejected',this)">&#10006; Reject</button>
+                  <button class="btn btn-warning btn-sm" onclick="setDecision('pending',this)">&#9203; Keep Pending</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Messages Thread -->
+            <div class="card" style="flex:1;display:flex;flex-direction:column;min-height:200px;">
+              <div class="card-header">
+                <h4>Discussion</h4>
+                <a href="messages.html" class="text-small">View All</a>
+              </div>
+              <div class="card-body" style="flex:1;overflow-y:auto;">
+                <div class="message-list">
+                  <div class="message-item">
+                    <div class="msg-avatar">RS</div>
+                    <div class="msg-content">
+                      <div class="msg-header">
+                        <span class="msg-author">Reviewer Smith</span>
+                        <span class="msg-time">Feb 12</span>
+                      </div>
+                      <div class="msg-body">Strong opening. The imagery in the first two paragraphs is exceptional. I'd like to see how the ending resolves.</div>
+                    </div>
+                  </div>
+                  <div class="message-item">
+                    <div class="msg-avatar" style="background:var(--success);">EJ</div>
+                    <div class="msg-content">
+                      <div class="msg-header">
+                        <span class="msg-author">Editor Jones</span>
+                        <span class="msg-time">Feb 13</span>
+                      </div>
+                      <div class="msg-body">Agreed. This has real potential. Let's discuss at the next meeting.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="message-compose">
+                <input type="text" placeholder="Add a comment...">
+                <button class="btn btn-primary btn-sm">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    // Star rating interaction
+    const stars = document.querySelectorAll('#ratingStars .star');
+    stars.forEach((star, i) => {
+      star.addEventListener('click', () => {
+        stars.forEach((s, j) => s.classList.toggle('filled', j <= i));
+      });
+      star.addEventListener('mouseenter', () => {
+        stars.forEach((s, j) => s.style.color = j <= i ? 'var(--accent)' : '');
+      });
+    });
+    document.getElementById('ratingStars').addEventListener('mouseleave', () => {
+      stars.forEach(s => s.style.color = '');
+    });
+
+    function setDecision(status, btn) {
+      const badges = { accepted: 'badge-accepted', rejected: 'badge-rejected', pending: 'badge-pending' };
+      const labels = { accepted: 'Accepted', rejected: 'Rejected', pending: 'Pending' };
+      const badge = document.querySelector('.card-header .badge');
+      badge.className = 'badge ' + badges[status];
+      badge.textContent = labels[status];
+    }
+  </script>
+</body>
+</html>

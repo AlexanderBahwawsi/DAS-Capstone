@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KCR — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo">KCR</div>
+        <div>
+          <h2>KCR Manager</h2>
+          <small>Submission Portal</small>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">Main</div>
+        <a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a>
+        <a href="submissions.html"><span class="icon">&#9998;</span> My Submissions</a>
+        <a href="submit.html"><span class="icon">&#10010;</span> New Submission</a>
+        <div class="nav-section">Review</div>
+        <a href="review-queue.html"><span class="icon">&#128220;</span> Review Queue</a>
+        <a href="messages.html"><span class="icon">&#9993;</span> Messages</a>
+        <div class="nav-section">Administration</div>
+        <a href="admin.html" class="active"><span class="icon">&#9881;</span> Admin Panel</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="avatar" style="background:var(--danger);">AD</div>
+        <div class="user-info">
+          <div class="name">Admin</div>
+          <div class="role">Administrator</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+      <header class="top-bar">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+          <span class="page-title">Admin Panel</span>
+        </div>
+        <div class="top-bar-actions">
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('exportModal').classList.add('show')">&#128190; Export Data</button>
+          <a href="index.html" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">&#128196;</div>
+            <div>
+              <div class="stat-value">47</div>
+              <div class="stat-label">Total Submissions</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon yellow">&#9203;</div>
+            <div>
+              <div class="stat-value">12</div>
+              <div class="stat-label">Pending Review</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">&#10004;</div>
+            <div>
+              <div class="stat-value">28</div>
+              <div class="stat-label">Accepted</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red">&#128101;</div>
+            <div>
+              <div class="stat-value">18</div>
+              <div class="stat-label">Active Users</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab active" onclick="showSection('submissions',this)">All Submissions</button>
+          <button class="tab" onclick="showSection('users',this)">User Management</button>
+          <button class="tab" onclick="showSection('assignments',this)">Reviewer Assignments</button>
+        </div>
+
+        <!-- Section: All Submissions -->
+        <div id="section-submissions">
+          <div class="filters-bar">
+            <div class="search-input">
+              <span class="search-icon">&#128269;</span>
+              <input type="text" placeholder="Search all submissions...">
+            </div>
+            <select class="filter-select">
+              <option>All Statuses</option>
+              <option>Pending</option>
+              <option>In Review</option>
+              <option>Accepted</option>
+              <option>Rejected</option>
+            </select>
+            <select class="filter-select">
+              <option>All Genres</option>
+              <option>Poetry</option>
+              <option>Short Fiction</option>
+              <option>Creative Non-Fiction</option>
+              <option>Visual Art</option>
+            </select>
+            <div class="btn-group">
+              <button class="btn btn-secondary btn-sm" onclick="alert('Bulk action: Update status for selected submissions')">Bulk Status Update</button>
+              <button class="btn btn-secondary btn-sm" onclick="alert('Bulk action: Assign reviewers to selected submissions')">Bulk Assign</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body" style="padding:0;">
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th><input type="checkbox" title="Select all"></th>
+                      <th>ID</th>
+                      <th>Title</th>
+                      <th>Author</th>
+                      <th>Genre</th>
+                      <th>Submitted</th>
+                      <th>Reviewer</th>
+                      <th>Status</th>
+                      <th>Avg Rating</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="checkbox"></td>
+                      <td><strong>#KCR-0042</strong></td>
+                      <td>Whispers of Autumn</td>
+                      <td>Jane Doe</td>
+                      <td>Poetry</td>
+                      <td>Feb 10</td>
+                      <td><span class="text-muted">Unassigned</span></td>
+                      <td><span class="badge badge-pending">Pending</span></td>
+                      <td class="text-muted">&mdash;</td>
+                      <td>
+                        <div class="btn-group">
+                          <a href="submission-detail.html" class="btn btn-secondary btn-sm">View</a>
+                          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('assignModal').classList.add('show')">Assign</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox"></td>
+                      <td><strong>#KCR-0041</strong></td>
+                      <td>Untitled Photograph Series</td>
+                      <td>Alex Rivera</td>
+                      <td>Photography</td>
+                      <td>Feb 8</td>
+                      <td>Reviewer Smith</td>
+                      <td><span class="badge badge-pending">Pending</span></td>
+                      <td class="text-muted">&mdash;</td>
+                      <td>
+                        <div class="btn-group">
+                          <a href="submission-detail.html" class="btn btn-secondary btn-sm">View</a>
+                          <button class="btn btn-secondary btn-sm">Assign</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox"></td>
+                      <td><strong>#KCR-0040</strong></td>
+                      <td>Rust and Rain</td>
+                      <td>Morgan Lee</td>
+                      <td>CNF</td>
+                      <td>Feb 7</td>
+                      <td>Reviewer Smith</td>
+                      <td><span class="badge badge-review">In Review</span></td>
+                      <td class="text-muted">&mdash;</td>
+                      <td>
+                        <div class="btn-group">
+                          <a href="submission-detail.html" class="btn btn-secondary btn-sm">View</a>
+                          <button class="btn btn-secondary btn-sm">Assign</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox"></td>
+                      <td><strong>#KCR-0039</strong></td>
+                      <td>The Glass Garden</td>
+                      <td>Jane Doe</td>
+                      <td>Short Fiction</td>
+                      <td>Feb 5</td>
+                      <td>Reviewer Smith, Editor Jones</td>
+                      <td><span class="badge badge-review">In Review</span></td>
+                      <td>4.0</td>
+                      <td>
+                        <div class="btn-group">
+                          <a href="submission-detail.html" class="btn btn-secondary btn-sm">View</a>
+                          <button class="btn btn-success btn-sm">Accept</button>
+                          <button class="btn btn-danger btn-sm">Reject</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox"></td>
+                      <td><strong>#KCR-0035</strong></td>
+                      <td>Urban Solitude</td>
+                      <td>Jane Doe</td>
+                      <td>Visual Art</td>
+                      <td>Jan 28</td>
+                      <td>Editor Jones</td>
+                      <td><span class="badge badge-accepted">Accepted</span></td>
+                      <td>4.2</td>
+                      <td>
+                        <a href="submission-detail.html" class="btn btn-secondary btn-sm">View</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer" style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="text-small text-muted">Showing 5 of 47 submissions</span>
+              <div class="btn-group">
+                <button class="btn btn-secondary btn-sm" disabled>Previous</button>
+                <button class="btn btn-primary btn-sm">Next</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: User Management -->
+        <div id="section-users" style="display:none;">
+          <div class="filters-bar">
+            <div class="search-input">
+              <span class="search-icon">&#128269;</span>
+              <input type="text" placeholder="Search users...">
+            </div>
+            <select class="filter-select">
+              <option>All Roles</option>
+              <option>Admin</option>
+              <option>Editor</option>
+              <option>Reviewer</option>
+              <option>Submitter</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('addUserModal').classList.add('show')">+ Add User</button>
+          </div>
+
+          <div class="card">
+            <div class="card-body" style="padding:0;">
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Joined</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                          <div style="width:32px;height:32px;border-radius:50%;background:var(--danger);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.75rem;">AD</div>
+                          <strong>Admin User</strong>
+                        </div>
+                      </td>
+                      <td>admin@kcr.edu</td>
+                      <td><span class="badge badge-rejected">Admin</span></td>
+                      <td>Sep 1, 2025</td>
+                      <td><span class="badge badge-accepted">Active</span></td>
+                      <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                          <div style="width:32px;height:32px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.75rem;">EJ</div>
+                          <strong>Editor Jones</strong>
+                        </div>
+                      </td>
+                      <td>jones@kcr.edu</td>
+                      <td><span class="badge badge-review">Editor</span></td>
+                      <td>Sep 5, 2025</td>
+                      <td><span class="badge badge-accepted">Active</span></td>
+                      <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                          <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.75rem;">RS</div>
+                          <strong>Reviewer Smith</strong>
+                        </div>
+                      </td>
+                      <td>smith@kcr.edu</td>
+                      <td><span class="badge badge-info">Reviewer</span></td>
+                      <td>Sep 10, 2025</td>
+                      <td><span class="badge badge-accepted">Active</span></td>
+                      <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                          <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.75rem;">JD</div>
+                          <strong>Jane Doe</strong>
+                        </div>
+                      </td>
+                      <td>janedoe@email.com</td>
+                      <td><span class="badge badge-pending">Submitter</span></td>
+                      <td>Oct 15, 2025</td>
+                      <td><span class="badge badge-accepted">Active</span></td>
+                      <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                          <div style="width:32px;height:32px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.75rem;">SY</div>
+                          <strong>Sam Yang</strong>
+                        </div>
+                      </td>
+                      <td>syang@kcr.edu</td>
+                      <td><span class="badge badge-info">Reviewer</span></td>
+                      <td>Oct 20, 2025</td>
+                      <td><span class="badge badge-accepted">Active</span></td>
+                      <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                          <div style="width:32px;height:32px;border-radius:50%;background:var(--warning);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.75rem;">AR</div>
+                          <strong>Alex Rivera</strong>
+                        </div>
+                      </td>
+                      <td>arivera@email.com</td>
+                      <td><span class="badge badge-pending">Submitter</span></td>
+                      <td>Nov 3, 2025</td>
+                      <td><span class="badge badge-accepted">Active</span></td>
+                      <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                          <div style="width:32px;height:32px;border-radius:50%;background:var(--text-light);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.75rem;">ML</div>
+                          <strong>Morgan Lee</strong>
+                        </div>
+                      </td>
+                      <td>mlee@email.com</td>
+                      <td><span class="badge badge-pending">Submitter</span></td>
+                      <td>Dec 1, 2025</td>
+                      <td><span class="badge badge-accepted">Active</span></td>
+                      <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Reviewer Assignments -->
+        <div id="section-assignments" style="display:none;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem;">
+            <!-- Reviewer Card 1 -->
+            <div class="card">
+              <div class="card-header">
+                <div style="display:flex;align-items:center;gap:.75rem;">
+                  <div style="width:40px;height:40px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.85rem;">RS</div>
+                  <div>
+                    <strong>Reviewer Smith</strong>
+                    <div class="text-small text-muted">smith@kcr.edu</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div style="display:flex;justify-content:space-between;margin-bottom:.75rem;">
+                  <span class="text-small text-muted">Workload</span>
+                  <span class="text-small" style="font-weight:600;">7 / 10</span>
+                </div>
+                <div class="progress-bar" style="margin-bottom:1rem;">
+                  <div class="fill yellow" style="width:70%;"></div>
+                </div>
+                <div class="text-small" style="margin-bottom:.5rem;font-weight:600;">Assigned Submissions:</div>
+                <div style="display:flex;flex-direction:column;gap:.4rem;">
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+                    <span>#KCR-0042 Whispers of Autumn</span>
+                    <span class="badge badge-pending" style="font-size:.65rem;">Pending</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+                    <span>#KCR-0040 Rust and Rain</span>
+                    <span class="badge badge-review" style="font-size:.65rem;">In Review</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+                    <span>#KCR-0039 The Glass Garden</span>
+                    <span class="badge badge-review" style="font-size:.65rem;">In Review</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;">Manage Assignments</button>
+              </div>
+            </div>
+
+            <!-- Reviewer Card 2 -->
+            <div class="card">
+              <div class="card-header">
+                <div style="display:flex;align-items:center;gap:.75rem;">
+                  <div style="width:40px;height:40px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.85rem;">EJ</div>
+                  <div>
+                    <strong>Editor Jones</strong>
+                    <div class="text-small text-muted">jones@kcr.edu</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div style="display:flex;justify-content:space-between;margin-bottom:.75rem;">
+                  <span class="text-small text-muted">Workload</span>
+                  <span class="text-small" style="font-weight:600;">4 / 10</span>
+                </div>
+                <div class="progress-bar" style="margin-bottom:1rem;">
+                  <div class="fill green" style="width:40%;"></div>
+                </div>
+                <div class="text-small" style="margin-bottom:.5rem;font-weight:600;">Assigned Submissions:</div>
+                <div style="display:flex;flex-direction:column;gap:.4rem;">
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+                    <span>#KCR-0039 The Glass Garden</span>
+                    <span class="badge badge-review" style="font-size:.65rem;">In Review</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+                    <span>#KCR-0035 Urban Solitude</span>
+                    <span class="badge badge-accepted" style="font-size:.65rem;">Accepted</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;">Manage Assignments</button>
+              </div>
+            </div>
+
+            <!-- Reviewer Card 3 -->
+            <div class="card">
+              <div class="card-header">
+                <div style="display:flex;align-items:center;gap:.75rem;">
+                  <div style="width:40px;height:40px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.85rem;">SY</div>
+                  <div>
+                    <strong>Sam Yang</strong>
+                    <div class="text-small text-muted">syang@kcr.edu</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div style="display:flex;justify-content:space-between;margin-bottom:.75rem;">
+                  <span class="text-small text-muted">Workload</span>
+                  <span class="text-small" style="font-weight:600;">2 / 10</span>
+                </div>
+                <div class="progress-bar" style="margin-bottom:1rem;">
+                  <div class="fill blue" style="width:20%;"></div>
+                </div>
+                <div class="text-small" style="margin-bottom:.5rem;font-weight:600;">Assigned Submissions:</div>
+                <div style="display:flex;flex-direction:column;gap:.4rem;">
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+                    <span>#KCR-0031 Echoes in Concrete</span>
+                    <span class="badge badge-accepted" style="font-size:.65rem;">Accepted</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;">Manage Assignments</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assign Reviewer Modal -->
+  <div class="modal-overlay" id="assignModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Assign Reviewer</h3>
+        <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('show')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-small text-muted" style="margin-bottom:1rem;">Select one or more reviewers for submission <strong>#KCR-0042</strong></p>
+        <div style="display:flex;flex-direction:column;gap:.75rem;">
+          <label style="display:flex;align-items:center;gap:.75rem;padding:.75rem;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;">
+            <input type="checkbox">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.7rem;">RS</div>
+            <div>
+              <div style="font-weight:600;font-size:.85rem;">Reviewer Smith</div>
+              <div class="text-small text-muted">7 / 10 assignments</div>
+            </div>
+          </label>
+          <label style="display:flex;align-items:center;gap:.75rem;padding:.75rem;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;">
+            <input type="checkbox">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.7rem;">EJ</div>
+            <div>
+              <div style="font-weight:600;font-size:.85rem;">Editor Jones</div>
+              <div class="text-small text-muted">4 / 10 assignments</div>
+            </div>
+          </label>
+          <label style="display:flex;align-items:center;gap:.75rem;padding:.75rem;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;">
+            <input type="checkbox">
+            <div style="width:32px;height:32px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.7rem;">SY</div>
+            <div>
+              <div style="font-weight:600;font-size:.85rem;">Sam Yang</div>
+              <div class="text-small text-muted">2 / 10 assignments</div>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').classList.remove('show')">Cancel</button>
+        <button class="btn btn-primary" onclick="alert('Reviewer assigned!'); this.closest('.modal-overlay').classList.remove('show')">Assign Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add User Modal -->
+  <div class="modal-overlay" id="addUserModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add New User</h3>
+        <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('show')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-control" placeholder="First name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-control" placeholder="Last name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" placeholder="user@kcr.edu">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <select class="form-control">
+            <option>Submitter</option>
+            <option>Reviewer</option>
+            <option>Editor</option>
+            <option>Admin</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Temporary Password</label>
+          <input type="password" class="form-control" placeholder="Set a temporary password">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').classList.remove('show')">Cancel</button>
+        <button class="btn btn-primary" onclick="alert('User created!'); this.closest('.modal-overlay').classList.remove('show')">Create User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Data Modal -->
+  <div class="modal-overlay" id="exportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Export Data</h3>
+        <button class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('show')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-small text-muted" style="margin-bottom:1rem;">Select what data you'd like to export:</p>
+        <div style="display:flex;flex-direction:column;gap:.75rem;">
+          <label style="display:flex;align-items:center;gap:.75rem;cursor:pointer;">
+            <input type="checkbox" checked> Submission data (titles, genres, dates, status)
+          </label>
+          <label style="display:flex;align-items:center;gap:.75rem;cursor:pointer;">
+            <input type="checkbox" checked> Reviewer scores and comments
+          </label>
+          <label style="display:flex;align-items:center;gap:.75rem;cursor:pointer;">
+            <input type="checkbox"> Author contact information
+          </label>
+          <label style="display:flex;align-items:center;gap:.75rem;cursor:pointer;">
+            <input type="checkbox"> User account data
+          </label>
+        </div>
+        <div class="form-group" style="margin-top:1rem;">
+          <label class="form-label">Export Format</label>
+          <select class="form-control">
+            <option>CSV</option>
+            <option>Excel (.xlsx)</option>
+            <option>JSON</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').classList.remove('show')">Cancel</button>
+        <button class="btn btn-primary" onclick="alert('Export started! File will download shortly.'); this.closest('.modal-overlay').classList.remove('show')">Export</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    function showSection(name, el) {
+      document.querySelectorAll('[id^="section-"]').forEach(s => s.style.display = 'none');
+      document.getElementById('section-' + name).style.display = '';
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+  </script>
+</body>
+</html>
