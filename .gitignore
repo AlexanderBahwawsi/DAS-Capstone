@@ -1,2 +1,8 @@
 node_modules/
 package-lock.json
+.env
+kcr.db
+kcr.db-wal
+kcr.db-shm
+uploads/*
+!uploads/.gitkeep

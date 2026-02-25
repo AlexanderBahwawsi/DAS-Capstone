@@ -6,33 +6,48 @@ A web-based submission management platform for the KCR literary magazine. Suppor
 
 ## Quick Start
 
-There are **two ways** to run this project. Pick whichever is easiest for you.
-
-### Option A — Just Open the File (no install needed)
-
-1. Navigate to the project folder.
-2. Open the **`html`** folder and double-click **`index.html`** to open it in your default browser.
-3. That's it — click through the pages using the sidebar and links.
-
-> This works because the project is pure HTML/CSS/JS with no build step.
-
-### Option B — Local Dev Server with Live Reload (recommended)
-
-This gives you a proper `localhost` URL and auto-refreshes the browser whenever you save a file.
-
 **Prerequisites:** [Node.js](https://nodejs.org/) (v16 or newer)
 
 ```bash
-# 1. Clone or download the project, then open a terminal in the project folder
+# 1. Clone the project
+git clone https://github.com/dev-m-kay/DAS-Capstone.git
+cd DAS-Capstone
 
-# 2. Install dependencies (one time only)
+# 2. Install dependencies
 npm install
 
-# 3. Start the dev server
+# 3. Create your .env file (see Environment Setup below)
+
+# 4. Start the server
 npm start
 ```
 
-The site will open automatically at **http://localhost:3000**. Any file changes you save will instantly reload in the browser.
+Open **http://localhost:3001** in your browser.
+
+### Environment Setup
+
+Copy `.env.example` to a new file called `.env` and fill in the values:
+
+```bash
+cp .env.example .env
+```
+
+Your `.env` file needs two values:
+
+```
+DATABASE_URL=postgresql://postgres.xxxxx:your-password@aws-1-us-east-1.pooler.supabase.com:5432/postgres
+JWT_SECRET=change-this-to-a-random-string
+```
+
+Get the `DATABASE_URL` from the team — it's the Supabase PostgreSQL connection string (Session mode, port 5432). The `.env` file is gitignored so credentials stay local.
+
+### Commands
+
+| Command | What it does |
+|---------|-------------|
+| `npm start` | Start the full server (frontend + API) on port 3001 |
+| `npm run dev` | Same, but auto-restarts when you change backend files |
+| `npm run frontend` | Frontend-only with live reload on port 3000 (no API) |
 
 ---
 
@@ -40,39 +55,137 @@ The site will open automatically at **http://localhost:3000**. Any file changes 
 
 ```
 CSCI4970-Capstone/
+├── html/                              # Frontend pages
+│   ├── index.html                     #   Login
+│   ├── register.html                  #   Account registration
+│   ├── dashboard.html                 #   Submitter dashboard
+│   ├── submit.html                    #   New submission form + file upload
+│   ├── submissions.html               #   Submissions list with filters
+│   ├── submission-detail.html         #   In-browser document viewer + review
+│   ├── review-queue.html              #   Reviewer queue (anonymized)
+│   ├── messages.html                  #   Messaging threads
+│   └── admin.html                     #   Admin panel
+│
 ├── css/
-│   └── styles.css                # Shared design system (colors, layout, components)
+│   └── styles.css                     # Shared design system
 ├── js/
-│   └── app.js                    # Shared interactivity (sidebar, search, modals)
-├── html/
-│   ├── index.html                # Login page
-│   ├── register.html             # Account registration
-│   ├── dashboard.html            # Submitter dashboard (stats, recent submissions)
-│   ├── submit.html               # New submission form with file upload
-│   ├── submissions.html          # All submissions list with filters & search
-│   ├── submission-detail.html    # In-browser document viewer + review panel
-│   ├── review-queue.html         # Reviewer queue (anonymized submissions)
-│   ├── messages.html             # Messaging system (per-submission threads)
-│   └── admin.html                # Admin panel (users, assignments, export)
-├── package.json                  # Node.js config for live-server
-└── README.md                     # This file
+│   └── app.js                         # Shared frontend interactivity
+│
+├── server/                            # Backend (Express + PostgreSQL)
+│   ├── index.js                       #   Entry point — starts server
+│   ├── config/
+│   │   └── db.js                      #   Supabase PostgreSQL connection + schema
+│   ├── middleware/
+│   │   ├── auth.js                    #   JWT authentication
+│   │   └── roles.js                   #   Role-based access control
+│   ├── models/                        #   Database query functions (TODO)
+│   │   ├── User.js
+│   │   ├── Submission.js
+│   │   ├── Review.js
+│   │   └── Message.js
+│   ├── controllers/                   #   Route handler logic (TODO)
+│   │   ├── authController.js
+│   │   ├── submissionController.js
+│   │   ├── reviewController.js
+│   │   ├── messageController.js
+│   │   └── adminController.js
+│   └── routes/                        #   API endpoint definitions (TODO)
+│       ├── auth.js                    #   /api/auth/*
+│       ├── submissions.js             #   /api/submissions/*
+│       ├── reviews.js                 #   /api/reviews/*
+│       ├── messages.js                #   /api/messages/*
+│       └── admin.js                   #   /api/admin/*
+│
+├── uploads/                           # Uploaded submission files (gitignored)
+├── .env.example                       # Environment variable template
+├── package.json
+└── README.md
 ```
 
 ---
 
-## Pages & Features
+## Database
 
-| Page | URL | Description |
-|------|-----|-------------|
-| **Login** | `index.html` | Sign-in form. Use the demo buttons to jump straight into a role. |
-| **Register** | `register.html` | Create a new submitter account. |
-| **Dashboard** | `dashboard.html` | Overview stats, recent submissions table, notifications. |
-| **New Submission** | `submit.html` | Submission form with drag-and-drop file upload (.docx, .pdf, .png, .jpg). |
-| **My Submissions** | `submissions.html` | Filterable list of all submissions with status badges and ratings. |
-| **Submission Detail** | `submission-detail.html` | Split view: in-browser document preview + metadata, rating, decision, and discussion thread. |
-| **Review Queue** | `review-queue.html` | Anonymized submission cards for reviewers (author hidden until review complete). |
-| **Messages** | `messages.html` | Thread-based messaging tied to submissions. |
-| **Admin Panel** | `admin.html` | Three tabs: All Submissions (bulk actions), User Management (RBAC), Reviewer Assignments (workload). |
+The database is **PostgreSQL hosted on [Supabase](https://supabase.com/)**. Tables are created automatically when the server starts for the first time.
+
+### Tables
+
+| Table | Purpose |
+|-------|---------|
+| `users` | User accounts with role (admin, editor, reviewer, submitter) |
+| `submissions` | Submitted works with title, genre, status, metadata |
+| `submission_files` | Files attached to each submission |
+| `reviews` | Reviewer ratings and comments (one per reviewer per submission) |
+| `messages` | Discussion threads tied to submissions |
+| `assignments` | Maps reviewers to submissions |
+
+### Querying the Database
+
+All models should use the shared pool from `server/config/db.js`:
+
+```javascript
+const { pool } = require('../config/db');
+
+// Example query
+const { rows } = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+```
+
+PostgreSQL uses `$1, $2, $3` for parameterized queries (not `?` like SQLite).
+
+---
+
+## API Reference
+
+All API routes are prefixed with `/api`. Protected routes require a `Bearer` token in the `Authorization` header.
+
+### Auth
+
+| Method | Endpoint | Body | Access |
+|--------|----------|------|--------|
+| POST | `/api/auth/register` | `{ first_name, last_name, email, password, bio? }` | Public |
+| POST | `/api/auth/login` | `{ email, password }` | Public |
+| GET | `/api/auth/me` | — | Logged in |
+
+### Submissions
+
+| Method | Endpoint | Body / Query | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/submissions` | Form data: `title, genre, word_count?, bio, notes?, files[]` | Logged in |
+| GET | `/api/submissions/mine` | — | Logged in |
+| GET | `/api/submissions` | `?status=pending&genre=Poetry` | Admin, Editor |
+| GET | `/api/submissions/:id` | — | Logged in |
+| GET | `/api/submissions/:id/files` | — | Logged in |
+| PUT | `/api/submissions/:id/status` | `{ status }` (pending/in_review/accepted/rejected) | Admin, Editor |
+
+### Reviews
+
+| Method | Endpoint | Body | Access |
+|--------|----------|------|--------|
+| GET | `/api/reviews/mine` | — | Reviewer, Editor |
+| GET | `/api/reviews/:submissionId` | — | Logged in |
+| POST | `/api/reviews/:submissionId` | `{ rating, comment? }` | Reviewer, Editor |
+| PUT | `/api/reviews/:submissionId/:id` | `{ rating?, comment? }` | Own review only |
+
+### Messages
+
+| Method | Endpoint | Body | Access |
+|--------|----------|------|--------|
+| GET | `/api/messages/threads` | — | Logged in |
+| GET | `/api/messages/:submissionId` | — | Logged in |
+| POST | `/api/messages/:submissionId` | `{ body }` | Logged in |
+
+### Admin
+
+| Method | Endpoint | Body | Access |
+|--------|----------|------|--------|
+| GET | `/api/admin/users` | — | Admin |
+| PUT | `/api/admin/users/:id/role` | `{ role }` | Admin |
+| DELETE | `/api/admin/users/:id` | — | Admin |
+| POST | `/api/admin/assign` | `{ submission_id, reviewer_id }` | Admin |
+| DELETE | `/api/admin/assign/:subId/:reviewerId` | — | Admin |
+| GET | `/api/admin/workload` | — | Admin |
+| PUT | `/api/admin/submissions/bulk-status` | `{ submission_ids[], status }` | Admin |
+| GET | `/api/admin/export` | — | Admin |
 
 ---
 
@@ -89,14 +202,19 @@ CSCI4970-Capstone/
 
 ## Tech Stack
 
-- **HTML5** / **CSS3** / **Vanilla JavaScript** — no frameworks, no build tools
-- **Inter** font (loaded from Google Fonts)
-- Fully responsive (desktop, tablet, mobile)
+| Layer | Technology |
+|-------|-----------|
+| Frontend | HTML5, CSS3, Vanilla JavaScript, Inter font |
+| Backend | Node.js, Express |
+| Database | PostgreSQL on Supabase |
+| Auth | JWT (jsonwebtoken) + bcryptjs |
+| File Upload | Multer (stored in `/uploads`) |
 
 ---
 
 ## Notes
 
-- This is a **frontend template only** — there is no backend or database yet. All data shown is placeholder/demo content.
-- Form submissions, file uploads, and button actions use JavaScript alerts or page redirects to simulate behavior.
-- The template is ready to be connected to a backend API (Node/Express, Django, etc.) in a future sprint.
+- Tables are created automatically on first `npm start` — no manual SQL needed.
+- The `.env` file is **required** — the server won't start without `DATABASE_URL`.
+- Frontend pages currently use demo/placeholder data. Connect them to the API endpoints to make them dynamic.
+- Uploaded files are stored in the `uploads/` folder and served at `/uploads/filename`.
