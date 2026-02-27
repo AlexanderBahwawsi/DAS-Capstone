@@ -4,6 +4,11 @@ A web-based submission management platform for the KCR literary magazine. Suppor
 
 ---
 
+## Milestone 1 Specific
+This milestone contains the frontend HTML for the project, as well as placeholder code for user authentication. This code is considered placeholder for now as we are still learning how to use supabase and can't properly test it yet.
+This code currently has a main branch and a branch called dmkay-auth, dmkay-auth contains the placeholder code for user authentication in server/controllers/authController.js.
+
+
 ## Quick Start
 
 **Prerequisites:** [Node.js](https://nodejs.org/) (v16 or newer)
