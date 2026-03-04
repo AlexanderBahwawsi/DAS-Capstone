@@ -30,7 +30,7 @@ const userModel = {
             [role, id]
         );
 
-        return rows;
+        return rows[0];
     },
     //deletebyId
     async deleteById(id){
@@ -42,7 +42,7 @@ const userModel = {
 
     async findByRole(role){
         const {rows} = await pool.query('SELECT * FROM users WHERE role = $1', [role]);
-        return rows[0];
+        return rows;
     }
 };
 
