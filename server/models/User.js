@@ -25,23 +25,24 @@ const userModel = {
         return rows;
     },
     //updateRole
-    async updateRole(id, newRole){
-        const validRoles = ['submitter', 'reviewer', 'editor', 'admin'];
-        if (!validRoles.includes(newRole)){
-            throw new Error('Invalid role');
-        }
-        const {rows} = await pool.query('UPDATE users SET role = $1 WHERE id = $2 RETURNING id, email, role',
-            [newRole, id]
+    async updateRole(id, role){
+        const {rows} = await pool.query('UPDATE users SET role = $1 WHERE id = $2 RETURNING *',
+            [role, id]
         );
 
         return rows;
     },
     //deletebyId
     async deleteById(id){
-        const {rows} = await pool.query('DELETE FROM users WHERE id = $1 RETURNING id',
+        const {rows} = await pool.query('DELETE FROM users WHERE id = $1',
             [id]
         );
         return rows;
+    },
+
+    async findByRole(role){
+        const {rows} = await pool.query('SELECT * FROM users WHERE role = $1', [role]);
+        return rows[0];
     }
 };
 
