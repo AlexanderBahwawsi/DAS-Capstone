@@ -82,6 +82,14 @@ async function initializeDatabase() {
       assigned_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       UNIQUE(submission_id, reviewer_id)
     );
+
+    -- Enable Row Level Security on all tables
+    ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE submissions ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE submission_files ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE assignments ENABLE ROW LEVEL SECURITY;
   `);
 }
 
