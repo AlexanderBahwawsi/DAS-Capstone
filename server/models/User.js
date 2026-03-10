@@ -1,10 +1,10 @@
 const { pool } = require('../config/db');
 
 const userModel = {
-    async create({first_name, last_name, email, password, bio='', role='submitter'}) {
+    async create({first_name, last_name, email, password_hash, bio='', role='submitter'}) {
         const { rows } = await pool.query(
-            'INSERT INTO users (first_name, last_name, email, password, bio, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-            [first_name, last_name, email, password, bio, role]
+            'INSERT INTO users (first_name, last_name, email, password_hash, bio, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [first_name, last_name, email, password_hash, bio, role]
         );
         return rows[0];
     },
@@ -21,7 +21,7 @@ const userModel = {
     },
     //findAll
     async findAll(){
-        const {rows} = await pool.query('SELECT id, first_name, last_name, email, password, bio, role, created_at FROM users ORDER BY created_at DESC');
+        const {rows} = await pool.query('SELECT id, first_name, last_name, email, bio, role, created_at FROM users ORDER BY created_at DESC');
         return rows;
     },
     //updateRole
