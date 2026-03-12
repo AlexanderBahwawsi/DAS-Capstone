@@ -6,6 +6,17 @@
 // const app = express()
 // app.use(express.json());
 // app.use(express.urlencoded({extended: true}));
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const generateToken = (userID) => {
+    return jwt.sign(
+        {id : userID},
+        process.env.JWT_SECRET,
+        {expiresIn: '7d'}
+    );
+};
+
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -17,20 +28,48 @@ app.listen(3000, () => {
 });
 
 app.post('/api/auth/login', (req, res)=>{
-    //return signup.html
-});
+    const { email, password } = req.body;
 
-app.post('api/auth/register', async(req, res) =>{
-    const {email, password} = req.body;
-    const {data, error} = await supabase.auth.signUp({
-        email,
-        password
-    });
-    if (error){
-        return res.status(400).json({error: error.message});
+    const user = await User.findByEmail({email}); //I don't know how to make this reference the USER model yet
+    if (!user|| !await bcrypt.compare(password, user.password)){
+        return res.status(401).json({error: 'Invalid credentials'});
     }
 
-    return res.status(200).json({message: 'User created successfully'});
+    const token = generateToken = generateToken(user._id);
+    res.json({token, user: {id: user._id, email: user.email} });
+
+});
+
+// Hash password before saving
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(12);
+  return bcrypt.hash(password, salt);
+};
+
+app.post('api/auth/register', async(req, res) =>{
+    const { first_name, last_name, email, password, bio, role} = req.body;
+
+  // Check if user exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ error: 'Email already registered' });
+  }
+
+  // Hash password
+  const hashedPassword = await hashPassword(password);
+
+  // Create user
+  const user = await User.create({
+    first_name, 
+    last_name,
+    email,
+    password: hashedPassword,
+    bio,
+    role //I'm thinking this will be moved somewhere else later.
+  });
+
+  const token = generateToken(user._id);
+  res.status(201).json({ token, user: { id: user._id, email } });
 });
 
 app.get('api/auth/me', async(req, res) => {
