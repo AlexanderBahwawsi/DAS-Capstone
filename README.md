@@ -4,7 +4,7 @@ A web-based submission management platform for the KCR literary magazine. Suppor
 
 ---
 ## Milestone 2 Specific
-This milestone contains code for the review model, the user model, the adminController, as well as the authcontroller. The Branches to look at are the main branch for the adminController, as well as dmkay_authController for the authController code (not pushed to main yet) and sikontoure-reviewmodel for the review model.
+This milestone contains code for the review model, the user model, the adminController, as well as the authcontroller. The Branches to look at are the main branch for the adminController, as well as dmkay_authController for the authController code (not pushed to main yet) and sikontoure-review-model for the review model.
 
 ## Milestone 1 Specific
 This milestone contains the frontend HTML for the project, as well as placeholder code for user authentication. This code is considered placeholder for now as we are still learning how to use supabase and can't properly test it yet.
