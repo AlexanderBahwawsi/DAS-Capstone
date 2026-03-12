@@ -73,7 +73,16 @@ app.post('api/auth/register', async(req, res) =>{
 });
 
 app.get('api/auth/me', async(req, res) => {
-    //user logged in
+    try {
+    // Fetch user details using decoded token
+    const user = await User.findById({ email: req.user.email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json({ username: user.username, email: user.email });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
 })
 
 // TODO: Add auth routes (POST /register, POST /login, GET /me)
