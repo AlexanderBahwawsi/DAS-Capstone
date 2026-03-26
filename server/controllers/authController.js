@@ -9,6 +9,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+/**
+ *
+ *
+ * @param {*} userID
+ * @return {*} 
+ */
 const generateToken = (userID) => {
     return jwt.sign(
         {id : userID},
@@ -18,6 +24,11 @@ const generateToken = (userID) => {
 };
 
 
+/**
+ * Description placeholder
+ *
+ * @type {*}
+ */
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY
@@ -26,6 +37,7 @@ const supabase = createClient(
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 });
+
 
 app.post('/api/auth/login', (req, res)=>{
     const { email, password } = req.body;
@@ -40,11 +52,19 @@ app.post('/api/auth/login', (req, res)=>{
 
 });
 
-// Hash password before saving
+
+/**
+ * Hash Password before saving
+ *
+ * @async
+ * @param {*} password 
+ * @returns {unknown} hash of the password
+ */
 const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(12);
   return bcrypt.hash(password, salt);
 };
+
 
 app.post('api/auth/register', async(req, res) =>{
     const { first_name, last_name, email, password, bio, role} = req.body;
