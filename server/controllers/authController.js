@@ -8,6 +8,7 @@
 // app.use(express.urlencoded({extended: true}));
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 /**
  *
@@ -39,10 +40,10 @@ app.listen(3000, () => {
 });
 
 
-app.post('/api/auth/login', (req, res)=>{
+exports.login = async (req, res)=>{
     const { email, password } = req.body;
 
-    const user = await User.findByEmail({email}); //I don't know how to make this reference the USER model yet
+    const user = await User.findByEmail({email}); 
     if (!user|| !await bcrypt.compare(password, user.password)){
         return res.status(401).json({error: 'Invalid credentials'});
     }
@@ -50,24 +51,17 @@ app.post('/api/auth/login', (req, res)=>{
     const token = generateToken = generateToken(user._id);
     res.json({token, user: {id: user._id, email: user.email} });
 
-});
-
-
-/**
- * Hash Password before saving
- *
- * @async
- * @param {*} password 
- * @returns {unknown} hash of the password
- */
-const hashPassword = async (password) => {
-  const salt = await bcrypt.genSalt(12);
-  return bcrypt.hash(password, salt);
 };
 
 
-app.post('api/auth/register', async(req, res) =>{
+
+exports.register = async(req, res) =>{
     const { first_name, last_name, email, password, bio, role} = req.body;
+
+    const hashPassword = async (password) => {
+      const salt = await bcrypt.genSalt(12);
+      return bcrypt.hash(password, salt);
+    };
 
   // Check if user exists
   const existingUser = await User.findOne({ email });
@@ -90,9 +84,10 @@ app.post('api/auth/register', async(req, res) =>{
 
   const token = generateToken(user._id);
   res.status(201).json({ token, user: { id: user._id, email } });
-});
+};
 
-app.get('api/auth/me', async(req, res) => {
+
+exports.me = async(req, res) => {
     try {
     // Fetch user details using decoded token
     const user = await User.findById({ email: req.user.id });
@@ -103,7 +98,7 @@ app.get('api/auth/me', async(req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
-})
+};
 
 // TODO: Add auth routes (POST /register, POST /login, GET /me)
 
