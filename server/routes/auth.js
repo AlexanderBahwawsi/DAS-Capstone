@@ -1,10 +1,9 @@
 const router = require('express').Router();
+const auth = require('../auth/authController');
+const { authenticate } = require('../middleware/auth');
 
-//POST Register Public
-
-//POST Login Public
-//GET Me Authenticated
-
-// TODO: Add auth routes (POST /register, POST /login, GET /me)
+router.post('/register', ctrl.register);
+router.post('/login',    ctrl.login);
+router.get('/me',        authenticate, ctrl.me);
 
 module.exports = router;

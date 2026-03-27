@@ -9,53 +9,26 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-
-/**
- *
- *
- * @param {*} userID
- * @return {*} 
- */
-const generateToken = (userID) => {
-    return jwt.sign(
-        {id : userID},
-        process.env.JWT_SECRET,
-        {expiresIn: '7d'}
-    );
-};
+const {generatetoken} = require('../middleware/auth')
 
 
-/**
- * Description placeholder
- *
- * @type {*}
- */
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_ANON_KEY
-);
 
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
-});
-
-
-exports.login = async (req, res)=>{
+exports.login = async (req, res)=>{ //Add input validation
     const { email, password } = req.body;
 
-    const user = await User.findByEmail({email}); 
-    if (!user|| !await bcrypt.compare(password, user.password)){
+    const user = await User.findByEmail(email); 
+    if (!user|| !await bcrypt.compare(password, user.password_hash)){
         return res.status(401).json({error: 'Invalid credentials'});
     }
 
-    const token = generateToken = generateToken(user._id);
-    res.json({token, user: {id: user._id, email: user.email} });
+    const token = generateToken(user.id);
+    res.json({token, user: {id: user.id, email: user.email} });
 
 };
 
 
 
-exports.register = async(req, res) =>{
+exports.register = async(req, res) =>{ //add input validation
     const { first_name, last_name, email, password, bio, role} = req.body;
 
     const hashPassword = async (password) => {
@@ -64,7 +37,7 @@ exports.register = async(req, res) =>{
     };
 
   // Check if user exists
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findByEmail( email );
   if (existingUser) {
     return res.status(400).json({ error: 'Email already registered' });
   }
@@ -77,20 +50,20 @@ exports.register = async(req, res) =>{
     first_name, 
     last_name,
     email,
-    password: hashedPassword,
+    password_hash: hashedPassword,
     bio,
     role //I'm thinking this will be moved somewhere else later.
   });
 
-  const token = generateToken(user._id);
-  res.status(201).json({ token, user: { id: user._id, email } });
+  const token = generateToken(user.id);
+  res.status(201).json({ token, user: { id: user.id, email } });
 };
 
 
 exports.me = async(req, res) => {
     try {
     // Fetch user details using decoded token
-    const user = await User.findById({ email: req.user.id });
+    const user = await User.findById(req.user.id );
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -101,5 +74,3 @@ exports.me = async(req, res) => {
 };
 
 // TODO: Add auth routes (POST /register, POST /login, GET /me)
-
-module.exports = router;
