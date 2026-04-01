@@ -11,7 +11,10 @@ exports.create = async (req, res) => {
       });
     }
 
+    const submission_id = await Submission.nextSubmissionID();
+
     const submission = await Submission.create({
+      submission_id,
       user_id,
       title,
       genre,

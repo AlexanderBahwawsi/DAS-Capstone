@@ -2,17 +2,29 @@ const { pool } = require('../config/db');
 
 const submissionModel = {
 
-  async create({ user_id, title, genre, word_count = null, bio, notes = null }) {
+   async nextSubmissionID() {
+    const { rows } = await pool.query(
+      `SELECT COUNT(*) FROM submissions`
+    );
+
+    const count = parseInt(rows[0].count) + 1;
+
+    const formattedId = `KCR-${String(count).padStart(4, '0')}`;
+
+    return formattedId;
+  },
+  
+  async create({ submission_id, user_id, title, genre, word_count = null, bio, notes = null }) {
     const { rows } = await pool.query(
       `INSERT INTO submissions (user_id, title, genre, word_count, bio, notes, status)
        VALUES ($1, $2, $3, $4, $5, $6, 'pending')
        RETURNING *`,
-      [user_id, title, genre, word_count, bio, notes]
+      [submission_id, user_id, title, genre, word_count, bio, notes]
     );
     return rows[0];
   },
 
-  async findById(id) {
+  async findBySubmissionId(id) {
     const { rows } = await pool.query(
       `SELECT s.*, u.first_name, u.last_name, u.email
        FROM submissions s
