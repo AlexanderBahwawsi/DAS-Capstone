@@ -8,7 +8,7 @@
 // app.use(express.urlencoded({extended: true}));
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
-const {generatetoken} = require('../middleware/auth')
+const {generateToken} = require('../middleware/auth')
 
 
 
