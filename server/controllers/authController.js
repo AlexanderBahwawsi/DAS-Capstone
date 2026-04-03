@@ -14,22 +14,28 @@ const {generatetoken} = require('../middleware/auth')
 
 
 exports.login = async (req, res)=>{ //Add input validation
-    const { email, password } = req.body;
+    try{
+      const { email, password } = req.body;
 
-    const user = await User.findByEmail(email); 
-    if (!user|| !await bcrypt.compare(password, user.password_hash)){
-        return res.status(401).json({error: 'Invalid credentials'});
+      const user = await User.findByEmail(email); 
+      if (!user|| !await bcrypt.compare(password, user.password_hash)){
+          return res.status(401).json({error: 'Invalid credentials'});
+      }
+
+      const token = generateToken(user.id);
+      res.json({token, user: {id: user.id, email: user.email} });
+    } catch(err){
+      console.error(err);
+      res.status(500).json({eror: 'Something went wrong'});
     }
-
-    const token = generateToken(user.id);
-    res.json({token, user: {id: user.id, email: user.email} });
 
 };
 
 
 
 exports.register = async(req, res) =>{ //add input validation
-    const { first_name, last_name, email, password, bio, role} = req.body;
+  try{  
+  const { first_name, last_name, email, password, bio, role} = req.body;
 
     const hashPassword = async (password) => {
       const salt = await bcrypt.genSalt(12);
@@ -55,8 +61,12 @@ exports.register = async(req, res) =>{ //add input validation
     role //I'm thinking this will be moved somewhere else later.
   });
 
-  const token = generateToken(user.id);
-  res.status(201).json({ token, user: { id: user.id, email } });
+  const token = generateToken(user);
+  res.status(201).json({ token, user: {  id: user.id, first_name: user.first_name, last_name: user.last_name, email: user.email, role: user.role} });
+}catch(err){
+  console.error(err);
+  res.status(500).json({eror: 'Something went wrong'});
+}
 };
 
 
@@ -67,7 +77,7 @@ exports.me = async(req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    res.status(200).json({ id: user.id, email: user.email });
+    res.status(200).json({  id: user.id, first_name: user.first_name, last_name: user.last_name, email: user.email, role: user.role, bio: user.bio, created_at: user.created_at});
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
