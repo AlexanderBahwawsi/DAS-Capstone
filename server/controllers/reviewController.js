@@ -1,9 +1,14 @@
 const reviewModel = require('../models/Review');
+<<<<<<< HEAD
 const Submission = require('../models/Submission')
+=======
+const Submission = require('../models/Submission');
+>>>>>>> 18b0290 (re-adding review controller)
 
 // create a review
 exports.create = async (req, res) => {
     try {
+<<<<<<< HEAD
         const { submissionId } = req.params
         const { rating, comment} = req.body
 
@@ -90,3 +95,88 @@ exports.update = async (req, res) => {
     }
 };
 
+=======
+        const { submissionId } = req.params;
+        const { rating, comment } = req.body;
+
+        // Look up submission
+        const submission = await Submission.findBySubmissionId(submissionId);
+        if (!submission) {
+            return res.status(404).json({ error: 'Submission not found' });
+        }
+
+        // Validate rating 1-5
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+        }
+
+        const review = await reviewModel.create({
+            submission_id: submissionId,
+            reviewer_id: req.user.id,
+            rating,
+            comment
+        });
+
+        res.status(201).json(review);
+    } catch (err) {
+        // Handle unique constraint (reviewer already reviewed this submission)
+        if (err.code === '23505') {
+            return res.status(409).json({ error: 'You have already reviewed this submission' });
+        }
+        console.error(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
+
+// return all reviews for a submission
+exports.getForSubmission = async (req, res) => {
+    try {
+        const reviews = await reviewModel.findBySubmission(req.params.submissionId);
+        res.json(reviews);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
+
+// return all reviews by the logged-in reviewer
+exports.getMyReviews = async (req, res) => {
+    try {
+        const reviews = await reviewModel.findByReviewer(req.user.id);
+        res.json(reviews);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
+
+// update own review only
+exports.update = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { rating, comment } = req.body;
+
+        // Look up the review
+        const review = await reviewModel.findById(id);
+        if (!review) {
+            return res.status(404).json({ error: 'Review not found' });
+        }
+
+        // Verify the reviewer owns this review
+        if (review.reviewer_id !== req.user.id) {
+            return res.status(403).json({ error: 'You can only edit your own reviews' });
+        }
+
+        // Validate rating if provided
+        if (rating !== undefined && (rating < 1 || rating > 5)) {
+            return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+        }
+
+        const updated = await reviewModel.update(id, { rating, comment });
+        res.json(updated);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
+>>>>>>> 18b0290 (re-adding review controller)
