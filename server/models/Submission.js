@@ -16,8 +16,8 @@ const submissionModel = {
   
   async create({ submission_id, user_id, title, genre, word_count = null, bio, notes = null }) {
     const { rows } = await pool.query(
-      `INSERT INTO submissions (user_id, title, genre, word_count, bio, notes, status)
-       VALUES ($1, $2, $3, $4, $5, $6, 'pending')
+      `INSERT INTO submissions (submission_id, user_id, title, genre, word_count, bio, notes, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending')
        RETURNING *`,
       [submission_id, user_id, title, genre, word_count, bio, notes]
     );

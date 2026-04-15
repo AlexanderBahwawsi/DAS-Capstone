@@ -1,16 +1,6 @@
-// const router = require('express').Router();
-// const express = require('express')
-// const {createClient} = require('@supabase/supabase-js');
-
-
-// const app = express()
-// app.use(express.json());
-// app.use(express.urlencoded({extended: true}));
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const {generateToken} = require('../middleware/auth')
-
-
 
 exports.login = async (req, res)=>{ //Add input validation
     try{
@@ -21,16 +11,14 @@ exports.login = async (req, res)=>{ //Add input validation
           return res.status(401).json({error: 'Invalid credentials'});
       }
 
-      const token = generateToken(user.id);
-      res.json({token, user: {id: user.id, email: user.email} });
+      const token = generateToken(user);
+      res.json({token, user: {id: user.id, first_name: user.first_name, last_name: user.last_name, email: user.email, role: user.role} });
     } catch(err){
       console.error(err);
-      res.status(500).json({eror: 'Something went wrong'});
+      res.status(500).json({error: 'Something went wrong'});
     }
 
 };
-
-
 
 exports.register = async(req, res) =>{ //add input validation
   try{  
@@ -57,17 +45,16 @@ exports.register = async(req, res) =>{ //add input validation
     email,
     password_hash: hashedPassword,
     bio,
-    role //I'm thinking this will be moved somewhere else later.
+    role 
   });
 
   const token = generateToken(user);
   res.status(201).json({ token, user: {  id: user.id, first_name: user.first_name, last_name: user.last_name, email: user.email, role: user.role} });
 }catch(err){
   console.error(err);
-  res.status(500).json({eror: 'Something went wrong'});
+  res.status(500).json({error: 'Something went wrong'});
 }
 };
-
 
 exports.me = async(req, res) => {
     try {
@@ -81,5 +68,3 @@ exports.me = async(req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
-// TODO: Add auth routes (POST /register, POST /login, GET /me)

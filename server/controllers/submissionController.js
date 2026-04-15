@@ -77,7 +77,7 @@ exports.getAll = async (req, res) => {
 
 exports.getOne = async (req, res) => {
   try {
-    const submission = await Submission.findById(req.params.id);
+    const submission = await Submission.findBySubmissionId(req.params.id);
 
     if (!submission) {
       return res.status(404).json({
