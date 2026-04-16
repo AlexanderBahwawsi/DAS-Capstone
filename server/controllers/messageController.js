@@ -1,5 +1,6 @@
 const messageModel = require('../models/Message');
 const Submission = require('../models/Submission');
+const User = require('../models/User');
 
 // send a message
 exports.send = async (req, res) => {
@@ -22,16 +23,23 @@ exports.send = async (req, res) => {
         const message = await messageModel.create({
             submission_id: submissionId,
             sender_id: req.user.id,
-            body
+            body: body.trim()
         });
 
-        // Emit Socket.Io
+        // Emit Socket.IO
+        const sender = await User.findById(req.user.id);
+        const enriched = {
+            ...message,
+            first_name: sender ? sender.first_name : null,
+            last_name: sender ? sender.last_name : null,
+            role: sender ? sender.role : null
+        };
         const io = req.app.get('io');
         if (io) {
-            io.to(submissionId).emit('new_message', message);
+            io.to(String(submission.id)).emit('new_message', enriched);
         }
 
-        res.status(201).json(message);
+        res.status(201).json(enriched);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });

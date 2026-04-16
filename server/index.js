@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http');
 const path = require('path');
 const cors = require('cors');
 
@@ -31,11 +32,17 @@ app.use((err, req, res, next) => {
 
 // ---------- Start ----------
 const { initializeDatabase } = require('./config/db');
+const { setupSocket } = require('./socket');
+
+const httpServer = http.createServer(app);
+const io = setupSocket(httpServer);
+app.set('io', io);
 
 initializeDatabase()
   .then(() => {
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       console.log(`KCR server running at http://localhost:${PORT}`);
+      console.log(`Socket.IO ready for real-time messages`);
     });
   })
   .catch(err => {
