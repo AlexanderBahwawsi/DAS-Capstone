@@ -2,6 +2,19 @@
    KCR Submission Manager — Shared JavaScript
    ============================================ */
 
+
+function getToken() {
+  return localStorage.getItem('authToken');
+}
+
+function setToken(token) {
+  if (token) {
+        localStorage.setItem('authToken', token);
+  } else {
+        localStorage.removeItem('authToken');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // --- Mobile sidebar toggle ---
