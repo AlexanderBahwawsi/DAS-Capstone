@@ -1,6 +1,7 @@
 const messageModel = require('../models/Message');
 const Submission = require('../models/Submission');
 const User = require('../models/User');
+const { canAccessSubmission } = require('../middleware/access');
 
 // send a message
 exports.send = async (req, res) => {
@@ -8,25 +9,24 @@ exports.send = async (req, res) => {
         const { submissionId } = req.params;
         const { body } = req.body;
 
-        // look up submission
-        const submission = await Submission.findBySubmissionId(submissionId);
-        if (!submission) {
-            return res.status(404).json({ error: "Submission not found" });
-        }
-
-        // check if body text isn't empty
         if (!body || !body.trim()) {
             return res.status(400).json({ error: "Message body cannot be empty" });
         }
 
-        // create message
+        const submission = await Submission.findBySubmissionId(submissionId);
+        if (!submission) {
+            return res.status(404).json({ error: "Submission not found" });
+        }
+        if (!(await canAccessSubmission(req.user, submission))) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
         const message = await messageModel.create({
-            submission_id: submissionId,
+            submission_id: submission.id,
             sender_id: req.user.id,
             body: body.trim()
         });
 
-        // Emit Socket.IO
         const sender = await User.findById(req.user.id);
         const enriched = {
             ...message,
@@ -49,7 +49,14 @@ exports.send = async (req, res) => {
 // return all messages for a submission
 exports.getForSubmission = async (req, res) => {
     try {
-        const messages = await messageModel.findBySubmission(req.params.submissionId);
+        const submission = await Submission.findBySubmissionId(req.params.submissionId);
+        if (!submission) {
+            return res.status(404).json({ error: "Submission not found" });
+        }
+        if (!(await canAccessSubmission(req.user, submission))) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+        const messages = await messageModel.findBySubmission(submission.id);
         res.json(messages);
     } catch (err) {
         console.error(err);

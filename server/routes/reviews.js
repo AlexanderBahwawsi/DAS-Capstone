@@ -2,11 +2,13 @@ const router = require('express').Router();
 const { authenticate } = require('../middleware/auth');
 const { authorize } = require('../middleware/roles');
 const reviewController = require('../controllers/reviewController');
- 
-router.get('/mine',              authenticate, reviewController.getMyReviews);
-router.get('/:submissionId',     authenticate, reviewController.getForSubmission);
-router.post('/:submissionId',    authenticate, authorize('reviewer', 'editor'), reviewController.create);
-router.put('/:submissionId/:id', authenticate, authorize('reviewer', 'editor'), reviewController.update);
- 
-module.exports = router;
 
+router.use(authenticate);
+
+router.get('/mine',           reviewController.getMyReviews);
+router.get('/queue',          authorize('reviewer', 'editor'), reviewController.getMyQueue);
+router.get('/:submissionId',  reviewController.getForSubmission);
+router.post('/:submissionId', authorize('reviewer', 'editor', 'admin'), reviewController.create);
+router.put('/:id',            authorize('reviewer', 'editor', 'admin'), reviewController.update);
+
+module.exports = router;

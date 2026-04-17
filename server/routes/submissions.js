@@ -24,11 +24,13 @@ const upload = multer({ storage, fileFilter, limits: { fileSize: 25 * 1024 * 102
 
 router.use(authenticate);
 
-router.post('/',          upload.array('files', 10), ctrl.create);
-router.get('/mine',       ctrl.getMine);
-router.get('/',           authorize('admin', 'editor'), ctrl.getAll);
-router.get('/:id',        ctrl.getOne);
-router.get('/:id/files',  ctrl.getFiles);
-router.put('/:id/status', authorize('admin', 'editor'), ctrl.updateStatus);
+router.post('/',             upload.array('files', 10), ctrl.create);
+router.get('/mine',          ctrl.getMine);
+router.get('/',              authorize('admin', 'editor'), ctrl.getAll);
+router.get('/:id',           ctrl.getOne);
+router.get('/:id/files',     ctrl.getFiles);
+router.get('/:id/reviewers', ctrl.getReviewers);
+router.get('/:id/rating',    ctrl.getRating);
+router.put('/:id/status',    authorize('admin', 'editor'), ctrl.updateStatus);
 
 module.exports = router;

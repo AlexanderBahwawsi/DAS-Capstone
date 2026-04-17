@@ -4,14 +4,11 @@ const submissionModel = {
 
    async nextSubmissionID() {
     const { rows } = await pool.query(
-      `SELECT COUNT(*) FROM submissions`
+      `SELECT COALESCE(MAX(id), 0) + 1 AS next FROM submissions`
     );
 
-    const count = parseInt(rows[0].count) + 1;
-
-    const formattedId = `KCR-${String(count).padStart(4, '0')}`;
-
-    return formattedId;
+    const next = parseInt(rows[0].next, 10);
+    return `KCR-${String(next).padStart(4, '0')}`;
   },
   
   async create({ submission_id, user_id, title, genre, word_count = null, bio, notes = null }) {
@@ -24,13 +21,24 @@ const submissionModel = {
     return rows[0];
   },
 
-  async findBySubmissionId(id) {
+  async findById(id) {
     const { rows } = await pool.query(
-      `SELECT s.*, u.first_name, u.last_name, u.email
+      `SELECT s.*, u.first_name || ' ' || u.last_name AS author_name, u.email AS author_email
        FROM submissions s
-       JOIN users u ON s.user_id = u.id
+       JOIN users u ON u.id = s.user_id
        WHERE s.id = $1`,
       [id]
+    );
+    return rows[0];
+  },
+
+  async findBySubmissionId(submission_id) {
+    const { rows } = await pool.query(
+      `SELECT s.*, u.first_name || ' ' || u.last_name AS author_name, u.email AS author_email
+       FROM submissions s
+       JOIN users u ON u.id = s.user_id
+       WHERE s.submission_id = $1`,
+      [submission_id]
     );
     return rows[0];
   },

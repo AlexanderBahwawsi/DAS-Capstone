@@ -82,9 +82,14 @@ exports.assignReviewer = async (req, res) => {
 
 exports.removeAssignment = async (req, res) => {
   try {
+    const submission = await Submission.findBySubmissionId(req.params.submissionId);
+    if (!submission) {
+      return res.status(404).json({ error: 'Submission not found' });
+    }
+
     const { rowCount } = await pool.query(
       'DELETE FROM assignments WHERE submission_id = $1 AND reviewer_id = $2',
-      [req.params.submissionId, req.params.reviewerId]
+      [submission.id, req.params.reviewerId]
     );
 
     if (rowCount === 0) {

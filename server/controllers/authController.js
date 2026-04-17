@@ -2,9 +2,12 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const {generateToken} = require('../middleware/auth')
 
-exports.login = async (req, res)=>{ //Add input validation
+exports.login = async (req, res)=>{
     try{
       const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required' });
+      }
 
       const user = await User.findByEmail(email); 
       if (!user|| !await bcrypt.compare(password, user.password_hash)){
@@ -20,32 +23,36 @@ exports.login = async (req, res)=>{ //Add input validation
 
 };
 
-exports.register = async(req, res) =>{ //add input validation
-  try{  
-  const { first_name, last_name, email, password, bio, role} = req.body;
+exports.register = async(req, res) =>{
+  try{
+  const { first_name, last_name, email, password, bio } = req.body;
 
-    const hashPassword = async (password) => {
-      const salt = await bcrypt.genSalt(12);
-      return bcrypt.hash(password, salt);
-    };
+  if (!first_name || !last_name || !email || !password) {
+    return res.status(400).json({ error: 'first_name, last_name, email, and password are required' });
+  }
+  if (typeof password !== 'string' || password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters' });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email address' });
+  }
 
-  // Check if user exists
-  const existingUser = await User.findByEmail( email );
+  const existingUser = await User.findByEmail(email);
   if (existingUser) {
     return res.status(400).json({ error: 'Email already registered' });
   }
 
-  // Hash password
-  const hashedPassword = await hashPassword(password);
+  const salt = await bcrypt.genSalt(12);
+  const hashedPassword = await bcrypt.hash(password, salt);
 
-  // Create user
+  // role is always 'submitter' on self-registration; admins promote via /api/admin/users/:id/role
   const user = await User.create({
-    first_name, 
+    first_name,
     last_name,
     email,
     password_hash: hashedPassword,
-    bio,
-    role 
+    bio: bio || '',
+    role: 'submitter'
   });
 
   const token = generateToken(user);
