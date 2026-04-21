@@ -43,6 +43,39 @@ function signOut(){
   window.location.href = 'index.html';
 }
 
+async function apiFetch(url, options = {}){
+  const token = getToken();
+  const headers = {
+    'Content-Type' : 'application/json',
+    ...options.headers
+  };
+  if (token) {
+    headers['Authorization'] = 'Bearer ${token}';
+  }
+  const config = {
+    ...options,
+    headers
+  };
+
+  try{
+    const response = await fetch(url, config);
+
+    if (response.status === 401) {
+      setToken(null);
+      setUser(null);
+      if (window.location.pathname !== '/index.html' &&
+        window.location.pathname !== '/register.html'){
+          window.location.href = '/index.html';
+        }
+        throw new Error('Unauthorized');
+    }
+    return response;
+  } catch (error) {
+    console.error('API fetch error:', error);
+    throw error;
+  }
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
