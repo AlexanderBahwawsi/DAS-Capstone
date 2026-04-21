@@ -5,7 +5,10 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
-    "frontend": "live-server --port=3000 --open=html/index.html"
+    "frontend": "live-server --port=3000 --open=html/index.html",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test:coverage": "cross-env NODE_ENV=test jest --runInBand --coverage"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -18,7 +21,27 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^30.3.0",
     "live-server": "^1.2.2",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "supertest": "^7.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/jest.setup.js"
+    ],
+    "testMatch": [
+      "<rootDir>/server/__tests__/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "server/**/*.js",
+      "!server/index.js",
+      "!server/socket.js",
+      "!server/config/**",
+      "!server/__tests__/**"
+    ],
+    "verbose": true
   }
 }
