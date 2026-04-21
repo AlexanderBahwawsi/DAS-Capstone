@@ -36,6 +36,14 @@ function setUser (user){
 }
 
 
+function signOut(){
+  console.log('Signing out...');
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('user');
+  window.location.href = 'index.html';
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // --- Mobile sidebar toggle ---
