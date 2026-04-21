@@ -15,6 +15,27 @@ function setToken(token) {
   }
 }
 
+function getUser(){
+  const userStr = localStorage.getItem('user');
+  if(userStr) {
+    try{
+      return JSON.parse(userStr);
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+}
+
+function setUser (user){
+  if (user){
+    localStorage.setItem('user', JSON.stringify(user));
+  } else{
+    localStorage.removeItem('user');
+  }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // --- Mobile sidebar toggle ---

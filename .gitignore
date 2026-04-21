@@ -6,3 +6,6 @@ kcr.db-wal
 kcr.db-shm
 uploads/*
 !uploads/.gitkeep
+postman/*
+.postman/*
+
