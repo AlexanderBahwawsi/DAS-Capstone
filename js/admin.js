@@ -4,34 +4,28 @@
 
 const API = '/api/admin';
 
-async function apiFetch(endpoint, options = {}) {
-  const token = getToken();
-  if (!token) {
+const sharedApiFetch = window.apiFetch;
+
+const apiFetch = async (endpoint, options = {}) => {
+  if (!getToken()) {
     window.location.href = 'index.html';
     return null;
   }
 
-  const res = await fetch(`${API}${endpoint}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
-
-  if (res.status === 401) {
-    signOut();
+  let res;
+  try {
+    res = await sharedApiFetch(`${API}${endpoint}`, options);
+  } catch (err) {
     return null;
   }
 
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     alert(data.error || 'Something went wrong');
     return null;
   }
   return data;
-}
+};
 
 // ---- Helpers ----
 
