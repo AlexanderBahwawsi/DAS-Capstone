@@ -4,10 +4,6 @@
 
 const API = '/api/admin';
 
-function getToken() {
-  return localStorage.getItem('token');
-}
-
 async function apiFetch(endpoint, options = {}) {
   const token = getToken();
   if (!token) {
@@ -25,8 +21,7 @@ async function apiFetch(endpoint, options = {}) {
   });
 
   if (res.status === 401) {
-    localStorage.removeItem('token');
-    window.location.href = 'index.html';
+    signOut();
     return null;
   }
 
@@ -411,15 +406,6 @@ async function submitExport() {
   URL.revokeObjectURL(url);
 
   document.getElementById('exportModal').classList.remove('show');
-}
-
-// ================================================================
-//  SIGN OUT
-// ================================================================
-
-function signOut() {
-  localStorage.removeItem('token');
-  window.location.href = 'index.html';
 }
 
 // ================================================================

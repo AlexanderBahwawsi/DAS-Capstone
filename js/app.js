@@ -9,9 +9,9 @@ function getToken() {
 
 function setToken(token) {
   if (token) {
-        localStorage.setItem('authToken', token);
+    localStorage.setItem('authToken', token);
   } else {
-        localStorage.removeItem('authToken');
+    localStorage.removeItem('authToken');
   }
 }
 
