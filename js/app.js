@@ -151,6 +151,7 @@ function populateSidebar(user){
   });
 }
 
+//Make functions global
 window.signOut = signOut;
 window.getToken = getToken;
 window.setToken = setToken;
@@ -159,7 +160,14 @@ window.setUser = setUser;
 window.apiFetch = apiFetch;
 window.requireAuth = requireAuth;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+
+  console.log('DOMContentLoaded - Initializing app...');
+
+  const user = await requireAuth();
+  if(user){
+    populateSidebar(user);
+  }
 
   // --- Mobile sidebar toggle ---
   const hamburger = document.querySelector('.hamburger');
@@ -243,5 +251,5 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Notifications panel would open here.\n\n• New message on "The Glass Garden"\n• "Urban Solitude" accepted\n• Submission confirmation sent');
     });
   }
-
+  console.log('App initialization complete');
 });
