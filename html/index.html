@@ -20,7 +20,7 @@
       </div>
       <h1>KCR Submission Manager</h1>
       <p>The centralized platform for managing literary magazine submissions, reviews, and publication decisions.</p>
-      <div style="margin-top:3rem;display:flex;gap:2rem;position:relative;z-index:1;">
+      <!-- <div style="margin-top:3rem;display:flex;gap:2rem;position:relative;z-index:1;">
         <div style="text-align:center;">
           <div style="font-size:2rem;font-weight:700;">500+</div>
           <div style="font-size:.85rem;opacity:.7;">Submissions</div>
@@ -32,7 +32,7 @@
         <div style="text-align:center;">
           <div style="font-size:2rem;font-weight:700;">12</div>
           <div style="font-size:.85rem;opacity:.7;">Issues Published</div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -45,7 +45,7 @@
         <form id="loginForm" onsubmit="return handleLogin(event)">
           <div class="form-group">
             <label class="form-label">Email Address</label>
-            <input type="email" class="form-control" placeholder="you@example.com" required>
+            <input type="email" id="email" class="form-control" placeholder="you@example.com" required>
           </div>
 
           <div class="form-group">
@@ -53,7 +53,7 @@
               Password
               <a href="#" style="font-weight:500;font-size:.8rem;">Forgot password?</a>
             </label>
-            <input type="password" class="form-control" placeholder="Enter your password" required>
+            <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
           </div>
 
           <div class="form-group" style="display:flex;align-items:center;gap:.5rem;">
@@ -61,11 +61,11 @@
             <label for="remember" style="font-size:.85rem;cursor:pointer;">Remember me</label>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
+          <button type="submit" id = "submitBtn" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
             Sign In
           </button>
 
-          <!-- Role-based demo links -->
+          <!-- Role-based demo links
           <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
             <p class="text-small text-muted" style="text-align:center;margin-bottom:.75rem;">Quick demo access:</p>
             <div style="display:flex;gap:.5rem;justify-content:center;">
@@ -73,7 +73,7 @@
               <a href="dashboard.html" class="btn btn-secondary btn-sm">Reviewer</a>
               <a href="admin.html" class="btn btn-secondary btn-sm">Admin</a>
             </div>
-          </div>
+          </div> -->
         </form>
 
         <div class="auth-footer">
@@ -83,6 +83,7 @@
     </div>
   </div>
 
+  <script src="../js/app.js"></script>
   <script>
     function handleLogin(e) {
       e.preventDefault();

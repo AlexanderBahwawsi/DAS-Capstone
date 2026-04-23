@@ -151,6 +151,36 @@ function populateSidebar(user){
   });
 }
 
+function renderNavigationByRole(role, containerId = 'sidebarNav'){
+  const navContainer = document.getElementById(containerId);
+  if(!navContainer) return;
+
+  const baseNav = [
+    {section: "Main", links: [
+      {href: "dashboard.html", text: "Dashboard"},
+      {href: "submissions.html", text: "My Submissions"},
+      {href: "submit.html", text: "New Submission"}
+    ]}
+  ];
+
+  const reviewSection = {
+    section: "Review",
+    links: [
+      { href: "review-queue.html", text: "Review Queue"},
+      { href: "messages.html", text: "Messages"}
+    ]
+  };
+
+  const adminSection = {
+    section: "administration",
+    links: [
+      { href: "admin.html", text: "Admin Panel"}
+    ]
+  };
+
+
+}
+
 //Make functions global
 window.signOut = signOut;
 window.getToken = getToken;
