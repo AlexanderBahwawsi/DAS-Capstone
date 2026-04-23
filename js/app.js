@@ -76,6 +76,51 @@ async function apiFetch(url, options = {}){
   }
 }
 
+async function requireAuth(){
+  const token = getToken();
+
+  const publicPages = ['/index.html', '/register.html', '/', '/login.html'];
+  const currentPage = window.location.pathname;
+
+  console.log('requireAuth - Current page:', currentPage);
+  console.log('requireAuth - Has token:', !!token);
+
+  if (publicPages.includes(currentPage)){
+    console.log('Public page, no auth required');
+  }
+
+  if(!token){
+    console.log('No token found, redirecting to login');
+    window.location.href = '/index.html'
+    return null;
+  }
+
+  try{
+    console.log('Verifying token with server...');
+    const response = await fetch('/api/auth/me',{
+      method: 'GET',
+      headers:{
+        'Authorization': 'Bearer ${token}'
+      }
+    });
+    if (response.ok){
+      const userData = await response.json();
+      console.log('Token valid, user:', userData);
+      setUser(userData);
+      return userData;
+    } else{
+      console.log('Token invalid, redirecting to login');
+      setToken(null);
+      setUser(null);
+      window.location.href = '/index.html';
+      return null;
+    }
+
+  } catch (error){
+    console.error('Auth verification failed:' ,error);
+  }
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
