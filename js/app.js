@@ -121,6 +121,43 @@ async function requireAuth(){
   }
 }
 
+function populateSidebar(user){
+  if (!user) return;
+
+  const userNameElements = document.querySelectorAll('.user-name');
+  const userRoleElements = document.querySelectorAll('-user-role');
+  const userAvatar = document.querySelector('.avatar');
+
+  const sidebarName = document.querySelector('.sidebar-user .user-name');
+  const sidebarRole = document.querySelector('.sidebar-user .user-role');
+
+  if(sidebarName){
+    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+    sidebarName.textContent = fullName || user.email || 'User';
+  }
+  if (sidebarRole && user.first_name){
+    userAvatar.textContent = user.first_name.charAt(0).toUpperCase() + (user.last_name ? user.last_name.charAt(0).toUpperCase(): '');
+  }
+
+  userNameElements.forEach(el =>{
+    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+    el.textContent = fullName || user.email || 'User';
+  });
+
+  userRoleElements.forEach(el => {
+    if(user.role) {
+      el.textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+    }
+  });
+}
+
+window.signOut = signOut;
+window.getToken = getToken;
+window.setToken = setToken;
+window.getUser = getUser;
+window.setUser = setUser;
+window.apiFetch = apiFetch;
+window.requireAuth = requireAuth;
 
 document.addEventListener('DOMContentLoaded', () => {
 
