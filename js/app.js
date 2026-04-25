@@ -50,7 +50,7 @@ async function apiFetch(url, options = {}){
     ...options.headers
   };
   if (token) {
-    headers['Authorization'] = 'Bearer ${token}';
+    headers['Authorization'] = `Bearer ${token}`;
   }
   const config = {
     ...options,
@@ -101,7 +101,7 @@ async function requireAuth(){
     const response = await fetch('/api/auth/me',{
       method: 'GET',
       headers:{
-        'Authorization': 'Bearer ${token}'
+        'Authorization': `Bearer ${token}`
       }
     });
     if (response.ok){
@@ -126,7 +126,7 @@ function populateSidebar(user){
   if (!user) return;
 
   const userNameElements = document.querySelectorAll('.user-name');
-  const userRoleElements = document.querySelectorAll('-user-role');
+  const userRoleElements = document.querySelectorAll('.user-role');
   const userAvatar = document.querySelector('.avatar');
 
   const sidebarName = document.querySelector('.sidebar-user .user-name');
@@ -136,8 +136,14 @@ function populateSidebar(user){
     const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
     sidebarName.textContent = fullName || user.email || 'User';
   }
-  if (sidebarRole && user.first_name){
-    userAvatar.textContent = user.first_name.charAt(0).toUpperCase() + (user.last_name ? user.last_name.charAt(0).toUpperCase(): '');
+  
+  if (sidebarRole && user.role){
+    sidebarRole.textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+  }
+
+  if (userAvatar && user.first_name) {
+    userAvatar.textContent = user.first_name.charAt(0).toUpperCase() + 
+    (user.last_name ? user.last_name.charAt(0).toUpperCase() : '');
   }
 
   userNameElements.forEach(el =>{
