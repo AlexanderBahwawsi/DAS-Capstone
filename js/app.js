@@ -79,7 +79,7 @@ async function apiFetch(url, options = {}){
 async function requireAuth(){
   const token = getToken();
 
-  const publicPages = ['/index.html', '/register.html', '/', '/login.html'];
+  const publicPages = ['/index.html', '/register.html', '/', '/index', '/register'];
   const currentPage = window.location.pathname;
 
   console.log('requireAuth - Current page:', currentPage);
@@ -87,6 +87,7 @@ async function requireAuth(){
 
   if (publicPages.includes(currentPage)){
     console.log('Public page, no auth required');
+    return null;
   }
 
   if(!token){
