@@ -122,6 +122,44 @@ async function requireAuth(){
   }
 }
 
+function displayUserName(user){
+  if (!user) return;
+
+  const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+  const displayName = fullName || user.email || 'user';
+
+  const userNameElements = document.querySelectorAll('.user-name');
+  userNameElements.forEach(el =>{
+    el.textContent = displayName;
+  });
+
+  const sidebarName = document.querySelector('.sidebar-footer .name');
+  if(sidebarName){
+    sidebarName.textContent = displayName;
+  }
+
+  const userAvatar = document.querySelector('.avatar');
+  if (userAvatar && user.first_name){
+    userAvatar.texxtContent = user.first_name.charAt(0).toUpperCase();
+  }
+}
+
+function displayUserRole(user){
+  if (!user || !user.role) return;
+
+  const roleDisplay = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+
+  const userRoleElements = document.querySelectorAll('.user-role');
+  userRoleElements.forEach(el => {
+    el.textContent = roleDisplay;
+  });
+
+  const sidebarRole = document.querySelector('.sidebar-footer .role');
+  if(sidebarRole){
+    sidebarRole.textContent = roleDisplay;
+  }
+}
+
 function populateSidebar(user){
   if (!user) return;
 
@@ -285,7 +323,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const bell = document.querySelector('.notification-bell .btn-icon');
   if (bell) {
     bell.addEventListener('click', () => {
-      alert('Notifications panel would open here.\n\n• New message on "The Glass Garden"\n• "Urban Solitude" accepted\n• Submission confirmation sent');
+      alert('Notifications panel would open here.');
     });
   }
   console.log('App initialization complete');
