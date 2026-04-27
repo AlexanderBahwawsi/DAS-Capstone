@@ -91,48 +91,7 @@
                 <input type="text" placeholder="Search messages..." style="width:100%;">
               </div>
             </div>
-            <div class="msg-threads-list">
-              <div class="thread-item active">
-                <div class="thread-avatar" style="background:var(--success);">EJ</div>
-                <div class="thread-info">
-                  <div class="thread-title">#KCR-0039 — The Glass Garden</div>
-                  <div class="thread-preview">Editor Jones: Agreed. This has real potential...</div>
-                  <div class="thread-meta">
-                    <span class="thread-time">Feb 13</span>
-                    <span class="unread-dot"></span>
-                  </div>
-                </div>
-              </div>
-              <div class="thread-item">
-                <div class="thread-avatar">RS</div>
-                <div class="thread-info">
-                  <div class="thread-title">#KCR-0035 — Urban Solitude</div>
-                  <div class="thread-preview">Congratulations! Your piece has been accepted...</div>
-                  <div class="thread-meta">
-                    <span class="thread-time">Feb 1</span>
-                  </div>
-                </div>
-              </div>
-              <div class="thread-item">
-                <div class="thread-avatar" style="background:var(--warning);">AD</div>
-                <div class="thread-info">
-                  <div class="thread-title">#KCR-0028 — Midnight Trains</div>
-                  <div class="thread-preview">Thank you for your submission. Unfortunately...</div>
-                  <div class="thread-meta">
-                    <span class="thread-time">Jan 25</span>
-                  </div>
-                </div>
-              </div>
-              <div class="thread-item">
-                <div class="thread-avatar" style="background:#7c3aed;">SY</div>
-                <div class="thread-info">
-                  <div class="thread-title">#KCR-0031 — Echoes in Concrete</div>
-                  <div class="thread-preview">Beautiful work! We'd like to feature this in...</div>
-                  <div class="thread-meta">
-                    <span class="thread-time">Jan 22</span>
-                  </div>
-                </div>
-              </div>
+            <div class="msg-threads-list" id="threads-list">
             </div>
           </div>
 
@@ -146,46 +105,7 @@
               <a href="submission-detail.html" class="btn btn-secondary btn-sm">View Submission</a>
             </div>
 
-            <div class="msg-conv-body">
-              <div class="chat-msg">
-                <div class="chat-avatar" style="background:var(--primary);">RS</div>
-                <div>
-                  <div class="chat-bubble">Strong opening. The imagery in the first two paragraphs is exceptional. I'd like to see how the ending resolves before making my final recommendation.</div>
-                  <div class="chat-time">Feb 12, 2026 &bull; 10:24 AM</div>
-                </div>
-              </div>
-
-              <div class="chat-msg">
-                <div class="chat-avatar" style="background:var(--success);">EJ</div>
-                <div>
-                  <div class="chat-bubble">Agreed. This has real potential. The glass metaphor is handled with sophistication — it doesn't feel heavy-handed. Let's discuss at the next meeting.</div>
-                  <div class="chat-time">Feb 13, 2026 &bull; 2:15 PM</div>
-                </div>
-              </div>
-
-              <div class="chat-msg">
-                <div class="chat-avatar" style="background:var(--primary);">RS</div>
-                <div>
-                  <div class="chat-bubble">I finished reading the full piece. The ending is unexpected but satisfying. I'm giving it 4 stars. My only concern is the pacing in sections 3 and 4 could be tightened.</div>
-                  <div class="chat-time">Feb 14, 2026 &bull; 9:47 AM</div>
-                </div>
-              </div>
-
-              <div class="chat-msg own">
-                <div class="chat-avatar" style="background:var(--primary);">JD</div>
-                <div>
-                  <div class="chat-bubble">Thank you both for the feedback! I'm happy to revise sections 3 and 4 if that would help. Should I submit an updated version?</div>
-                  <div class="chat-time">Feb 14, 2026 &bull; 11:30 AM</div>
-                </div>
-              </div>
-
-              <div class="chat-msg">
-                <div class="chat-avatar" style="background:var(--success);">EJ</div>
-                <div>
-                  <div class="chat-bubble">That would be great. Please submit the revision as a new file attachment on the original submission. We'll review the updated version at our meeting on Feb 20th.</div>
-                  <div class="chat-time">Feb 14, 2026 &bull; 3:02 PM</div>
-                </div>
-              </div>
+            <div class="msg-conv-body" id="conv-body">
             </div>
 
             <div class="msg-conv-footer">
@@ -199,5 +119,7 @@
   </div>
 
   <script src="../js/app.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../js/messages.js"></script>
 </body>
 </html>
