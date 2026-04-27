@@ -140,7 +140,7 @@ function displayUserName(user){
 
   const userAvatar = document.querySelector('.avatar');
   if (userAvatar && user.first_name){
-    userAvatar.texxtContent = user.first_name.charAt(0).toUpperCase();
+    userAvatar.textContent = user.first_name.charAt(0).toUpperCase();
   }
 }
 
@@ -160,70 +160,71 @@ function displayUserRole(user){
   }
 }
 
-function populateSidebar(user){
-  if (!user) return;
-
-  const userNameElements = document.querySelectorAll('.user-name');
-  const userRoleElements = document.querySelectorAll('.user-role');
-  const userAvatar = document.querySelector('.avatar');
-
-  const sidebarName = document.querySelector('.sidebar-user .user-name');
-  const sidebarRole = document.querySelector('.sidebar-user .user-role');
-
-  if(sidebarName){
-    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-    sidebarName.textContent = fullName || user.email || 'User';
-  }
-  
-  if (sidebarRole && user.role){
-    sidebarRole.textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
-  }
-
-  if (userAvatar && user.first_name) {
-    userAvatar.textContent = user.first_name.charAt(0).toUpperCase() + 
-    (user.last_name ? user.last_name.charAt(0).toUpperCase() : '');
-  }
-
-  userNameElements.forEach(el =>{
-    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-    el.textContent = fullName || user.email || 'User';
-  });
-
-  userRoleElements.forEach(el => {
-    if(user.role) {
-      el.textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
-    }
-  });
-}
-
 function renderNavigationByRole(role, containerId = 'sidebarNav'){
   const navContainer = document.getElementById(containerId);
   if(!navContainer) return;
 
-  const baseNav = [
-    {section: "Main", links: [
-      {href: "dashboard.html", text: "Dashboard"},
-      {href: "submissions.html", text: "My Submissions"},
-      {href: "submit.html", text: "New Submission"}
-    ]}
-  ];
+  let navSections = [];
 
+  const mainSection = {
+    section: "Main",
+    links:[
+      {href: "dashboard.html", text: "Dashboard"},
+      {href: "submissions.html", text: "MySubmissions"},
+      {href: "submit.html", text: "New Submisssion"}
+    ]
+  };
+  navSections.push(mainSection);
+      
+  // Review section - ONLY for reviewers, editors, and admins
   const reviewSection = {
     section: "Review",
-    links: [
-      { href: "review-queue.html", text: "Review Queue"},
-      { href: "messages.html", text: "Messages"}
+      links: [
+        { href: "review-queue.html", text: "Review Queue" },
+        { href: "messages.html", text: "Messages" }
     ]
   };
-
+    
+    // Admin section - ONLY for admins
   const adminSection = {
-    section: "administration",
+    section: "Administration",
     links: [
-      { href: "admin.html", text: "Admin Panel"}
+      { href: "admin.html", text: "Admin Panel" }
     ]
   };
+    
+    // Conditionally add sections based on role
+  if (role === 'reviewer' || role === 'editor' || role === 'admin') {
+    navSections.push(reviewSection);
+  }
+    
+  if (role === 'admin') {
+    navSections.push(adminSection);
+  }
+
+  const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+  
+  let html = '';
+    for (const section of navSections) {
+      html += `<div class="nav-section">${section.section}</div>`;
+      for (const link of section.links) {
+        const activeClass = link.href === currentPage ? 'active' : '';
+        html += `<a href="${link.href}" class="${activeClass}">${link.text}</a>`;
+      }
+    }
+    
+    navContainer.innerHTML = html;
 
 
+}
+
+function populateSidebar(user){
+  if (!user) return;
+
+  displayUserName(user);
+  displayUserRole(user);
+
+  renderNavigationByRole(user.role, 'sidebarNav');
 }
 
 //Make functions global
@@ -234,6 +235,10 @@ window.getUser = getUser;
 window.setUser = setUser;
 window.apiFetch = apiFetch;
 window.requireAuth = requireAuth;
+window.renderNavigationByRole = renderNavigationByRole;
+window.populateSidebar = populateSidebar;
+window.displayUserName = displayUserName;
+window.displayUserRole = displayUserRole;
 
 document.addEventListener('DOMContentLoaded', async () => {
 
