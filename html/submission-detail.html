@@ -128,7 +128,7 @@
             </div>
 
             <!-- Rating (Reviewer view) -->
-            <div class="card">
+            <div class="card" id="rating-card">
               <div class="card-header"><h4>Your Rating</h4></div>
               <div class="card-body">
                 <div class="rating" id="ratingStars">
@@ -138,8 +138,8 @@
                   <span class="star" data-val="4">&#9733;</span>
                   <span class="star" data-val="5">&#9733;</span>
                 </div>
-                <textarea class="form-control" rows="3" placeholder="Add your review comments..." style="margin-top:.75rem;"></textarea>
-                <button class="btn btn-primary btn-sm" style="margin-top:.75rem;">Submit Review</button>
+                <textarea class="form-control" id="review-comment" rows="3" placeholder="Add your review comments..." style="margin-top:.75rem;"></textarea>
+                <button class="btn btn-primary btn-sm" id="submit-review-btn" style="margin-top:.75rem;">Submit Review</button>
               </div>
             </div>
 
@@ -163,26 +163,6 @@
               </div>
               <div class="card-body" style="flex:1;overflow-y:auto;">
                 <div class="message-list">
-                  <div class="message-item">
-                    <div class="msg-avatar">RS</div>
-                    <div class="msg-content">
-                      <div class="msg-header">
-                        <span class="msg-author">Reviewer Smith</span>
-                        <span class="msg-time">Feb 12</span>
-                      </div>
-                      <div class="msg-body">Strong opening. The imagery in the first two paragraphs is exceptional. I'd like to see how the ending resolves.</div>
-                    </div>
-                  </div>
-                  <div class="message-item">
-                    <div class="msg-avatar" style="background:var(--success);">EJ</div>
-                    <div class="msg-content">
-                      <div class="msg-header">
-                        <span class="msg-author">Editor Jones</span>
-                        <span class="msg-time">Feb 13</span>
-                      </div>
-                      <div class="msg-body">Agreed. This has real potential. Let's discuss at the next meeting.</div>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div class="message-compose">
@@ -197,21 +177,9 @@
   </div>
 
   <script src="../js/app.js"></script>
+  <script src="../js/reviews.js"></script>
+  <script src="../js/messages.js"></script>
   <script>
-    // Star rating interaction
-    const stars = document.querySelectorAll('#ratingStars .star');
-    stars.forEach((star, i) => {
-      star.addEventListener('click', () => {
-        stars.forEach((s, j) => s.classList.toggle('filled', j <= i));
-      });
-      star.addEventListener('mouseenter', () => {
-        stars.forEach((s, j) => s.style.color = j <= i ? 'var(--accent)' : '');
-      });
-    });
-    document.getElementById('ratingStars').addEventListener('mouseleave', () => {
-      stars.forEach(s => s.style.color = '');
-    });
-
     function setDecision(status, btn) {
       const badges = { accepted: 'badge-accepted', rejected: 'badge-rejected', pending: 'badge-pending' };
       const labels = { accepted: 'Accepted', rejected: 'Rejected', pending: 'Pending' };
