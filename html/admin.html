@@ -20,22 +20,14 @@
           <small>Submission Portal</small>
         </div>
       </div>
-      <nav class="sidebar-nav">
-        <div class="nav-section">Main</div>
-        <a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a>
-        <a href="submissions.html"><span class="icon">&#9998;</span> My Submissions</a>
-        <a href="submit.html"><span class="icon">&#10010;</span> New Submission</a>
-        <div class="nav-section">Review</div>
-        <a href="review-queue.html"><span class="icon">&#128220;</span> Review Queue</a>
-        <a href="messages.html"><span class="icon">&#9993;</span> Messages</a>
-        <div class="nav-section">Administration</div>
-        <a href="admin.html" class="active"><span class="icon">&#9881;</span> Admin Panel</a>
+      <nav class="sidebar-nav" id="sidebarNav">
+        <!--Links will be filled in here by apps.js-->
       </nav>
       <div class="sidebar-footer">
-        <div class="avatar" style="background:var(--danger);">AD</div>
+        <div class="avatar" id="userAvatar">U</div>
         <div class="user-info">
-          <div class="name">Admin</div>
-          <div class="role">Administrator</div>
+          <div class="name" id="userName">Loading...</div>
+          <div class="role" id="userRole">Loading...</div>
         </div>
       </div>
     </aside>
@@ -49,7 +41,7 @@
         </div>
         <div class="top-bar-actions">
           <button class="btn btn-secondary btn-sm" onclick="document.getElementById('exportModal').classList.add('show')">&#128190; Export Data</button>
-          <a href="index.html" class="btn btn-secondary btn-sm">Sign Out</a>
+          <button onclick="signOut()" class="btn btn-secondary btn-sm">Sign Out</button>
         </div>
       </header>
 
