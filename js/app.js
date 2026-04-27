@@ -9,9 +9,9 @@ function getToken() {
 
 function setToken(token) {
   if (token) {
-        localStorage.setItem('authToken', token);
+    localStorage.setItem('authToken', token);
   } else {
-        localStorage.removeItem('authToken');
+    localStorage.removeItem('authToken');
   }
 }
 
@@ -61,13 +61,11 @@ async function apiFetch(url, options = {}){
     const response = await fetch(url, config);
 
     if (response.status === 401) {
-      setToken(null);
-      setUser(null);
-      if (window.location.pathname !== '/index.html' &&
-        window.location.pathname !== '/register.html'){
-          window.location.href = '/index.html';
-        }
-        throw new Error('Unauthorized');
+      const path = window.location.pathname;
+      if (!path.endsWith('/index.html') && !path.endsWith('/register.html')) {
+        signOut();
+      }
+      throw new Error('Unauthorized');
     }
     return response;
   } catch (error) {
