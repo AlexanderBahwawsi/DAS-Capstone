@@ -19,7 +19,7 @@
         </div>
       </div>
       <h1>Join KCR</h1>
-      <p>Submit your creative work for consideration in our literary magazine. Poetry, prose, visual art &mdash; we want to see it all.</p>
+      <p>Submit your creative work for consideration in our literary magazine.</p>
     </div>
 
     <!-- Right Form -->
@@ -28,36 +28,36 @@
         <h2>Create your account</h2>
         <p class="subtitle">Start submitting your work today</p>
 
-        <form onsubmit="event.preventDefault(); window.location.href='dashboard.html';">
+        <form id="registerForm">
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">First Name <span class="required">*</span></label>
-              <input type="text" class="form-control" placeholder="Jane" required>
+              <input type="text" id="firstName" class="form-control" placeholder="Jane" required>
             </div>
             <div class="form-group">
               <label class="form-label">Last Name <span class="required">*</span></label>
-              <input type="text" class="form-control" placeholder="Doe" required>
+              <input type="text" id="lastName" class="form-control" placeholder="Doe" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label">Email Address <span class="required">*</span></label>
-            <input type="email" class="form-control" placeholder="you@example.com" required>
+            <input type="email" id="email" class="form-control" placeholder="you@example.com" required>
           </div>
 
           <div class="form-group">
             <label class="form-label">Password <span class="required">*</span></label>
-            <input type="password" class="form-control" placeholder="At least 8 characters" required minlength="8">
+            <input type="password" id="password" class="form-control" placeholder="At least 8 characters" required minlength="8">
           </div>
 
           <div class="form-group">
             <label class="form-label">Confirm Password <span class="required">*</span></label>
-            <input type="password" class="form-control" placeholder="Re-enter password" required>
+            <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter password" required>
           </div>
 
           <div class="form-group">
             <label class="form-label">Short Bio</label>
-            <textarea class="form-control" rows="3" placeholder="A few words about yourself (optional)"></textarea>
+            <textarea id="bio" class="form-control" rows="3" placeholder="A few words about yourself (optional)"></textarea>
           </div>
 
           <div class="form-group" style="display:flex;align-items:flex-start;gap:.5rem;">
@@ -67,7 +67,9 @@
             </label>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
+          <div id="errorMessage" style="display:none; color:#dc2626; margin-bottom:1rem; font-size:0.875rem; padding:0.5rem; background:#fee2e2; border-radius:6px;"></div>
+
+          <button type="submit" id="submitBtn" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
             Create Account
           </button>
         </form>
@@ -78,5 +80,104 @@
       </div>
     </div>
   </div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    (function(){
+      var form = document.getElementById('registerForm');
+      var firstNameInput = document.getElementById('firstName');
+      var lastNameInput = document.getElementById('lastName');
+      var emailInput = document.getElementById('email');
+      var passwordInput = document.getElementById('password');
+      var confirmPasswordInput = document.getElementById('confirmPassword');
+      var bioInput = document.getElementById('bio');
+      var termsCheckbox = document.getElementById('terms');
+      var errorDiv = document.getElementById('errorMessage');
+      var submitBtn = document.getElementById('submitBtn');
+
+      form.onsubmit = async function(event){
+        event.preventDefault();
+        console.log('Form submitted!');
+
+        var firstName = firstNameInput.value.trim();
+        var lastName = lastNameInput.value.trim();
+        var email = emailInput.value.trim();
+        var password = passwordInput.value;
+        var confirmPassword = confirmPasswordInput.value;
+        var bio = bioInput ? bioInput.value : '';
+
+        if(!firstName || !lastName || !email || !password){ //Check if any required field elements are missing
+          errorDiv.style.display='block';
+          errorDiv.textContent = 'Please fill in all required fields';
+          return;
+        }
+
+        if(password !== confirmPassword){
+          errorDiv.style.display='block';
+          errorDiv.textContent = 'Passwords do not match';
+          return;
+        }
+
+        if(password.length<8){
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'Password must be at least 8 characters';
+          return;
+        }
+
+        if (!termsCheckbox.checked) {
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'You must agree to the Terms of Service';
+          return;
+        }
+
+        errorDiv.style.display = 'none';
+
+        var originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Creating account...';
+        submitBtn.disabled = true;
+        
+        try{
+          var response = await fetch('/api/auth/register',{
+            method: 'POST',
+            headers:{
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              first_name: firstName,
+              last_name: lastName,
+              email: email,
+              password: password,
+              bio: bio,
+              role: 'submitter'
+            })
+          });
+
+          console.log('Response status:', response.status);
+
+          var data = await response.json();
+
+          if(response.ok){
+            console.log('Registration successful!');
+            window.setToken(data.token);
+            window.setUser(data.user);
+            window.location.href = 'dashboard.html';
+          } else{
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = data.error || 'Registration failed';
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+          }
+        } catch(error){
+          console.error('Error:', error);
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'Network error';
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        }
+      };
+
+    })();
+  </script>
+
 </body>
 </html>

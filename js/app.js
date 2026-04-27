@@ -74,8 +74,178 @@ async function apiFetch(url, options = {}){
   }
 }
 
+async function requireAuth(){
+  const token = getToken();
 
-document.addEventListener('DOMContentLoaded', () => {
+  const publicPages = ['/index.html', '/register.html', '/', '/index', '/register'];
+  const currentPage = window.location.pathname;
+
+  console.log('requireAuth - Current page:', currentPage);
+  console.log('requireAuth - Has token:', !!token);
+
+  if (publicPages.includes(currentPage)){
+    console.log('Public page, no auth required');
+    return null;
+  }
+
+  if(!token){
+    console.log('No token found, redirecting to login');
+    window.location.href = '/index.html'
+    return null;
+  }
+
+  try{
+    console.log('Verifying token with server...');
+    const response = await fetch('/api/auth/me',{
+      method: 'GET',
+      headers:{
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    if (response.ok){
+      const userData = await response.json();
+      console.log('Token valid, user:', userData);
+      setUser(userData);
+      return userData;
+    } else{
+      console.log('Token invalid, redirecting to login');
+      setToken(null);
+      setUser(null);
+      window.location.href = '/index.html';
+      return null;
+    }
+
+  } catch (error){
+    console.error('Auth verification failed:' ,error);
+  }
+}
+
+function displayUserName(user){
+  if (!user) return;
+
+  const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+  const displayName = fullName || user.email || 'user';
+
+  const userNameElements = document.querySelectorAll('.user-name');
+  userNameElements.forEach(el =>{
+    el.textContent = displayName;
+  });
+
+  const sidebarName = document.querySelector('.sidebar-footer .name');
+  if(sidebarName){
+    sidebarName.textContent = displayName;
+  }
+
+  const userAvatar = document.querySelector('.avatar');
+  if (userAvatar && user.first_name){
+    userAvatar.textContent = user.first_name.charAt(0).toUpperCase();
+  }
+}
+
+function displayUserRole(user){
+  if (!user || !user.role) return;
+
+  const roleDisplay = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+
+  const userRoleElements = document.querySelectorAll('.user-role');
+  userRoleElements.forEach(el => {
+    el.textContent = roleDisplay;
+  });
+
+  const sidebarRole = document.querySelector('.sidebar-footer .role');
+  if(sidebarRole){
+    sidebarRole.textContent = roleDisplay;
+  }
+}
+
+function renderNavigationByRole(role, containerId = 'sidebarNav'){
+  const navContainer = document.getElementById(containerId);
+  if(!navContainer) return;
+
+  let navSections = [];
+
+  const mainSection = {
+    section: "Main",
+    links:[
+      {href: "dashboard.html", text: "Dashboard"},
+      {href: "submissions.html", text: "MySubmissions"},
+      {href: "submit.html", text: "New Submisssion"}
+    ]
+  };
+  navSections.push(mainSection);
+      
+  // Review section - ONLY for reviewers, editors, and admins
+  const reviewSection = {
+    section: "Review",
+      links: [
+        { href: "review-queue.html", text: "Review Queue" },
+        { href: "messages.html", text: "Messages" }
+    ]
+  };
+    
+    // Admin section - ONLY for admins
+  const adminSection = {
+    section: "Administration",
+    links: [
+      { href: "admin.html", text: "Admin Panel" }
+    ]
+  };
+    
+    // Conditionally add sections based on role
+  if (role === 'reviewer' || role === 'editor' || role === 'admin') {
+    navSections.push(reviewSection);
+  }
+    
+  if (role === 'admin') {
+    navSections.push(adminSection);
+  }
+
+  const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+  
+  let html = '';
+    for (const section of navSections) {
+      html += `<div class="nav-section">${section.section}</div>`;
+      for (const link of section.links) {
+        const activeClass = link.href === currentPage ? 'active' : '';
+        html += `<a href="${link.href}" class="${activeClass}">${link.text}</a>`;
+      }
+    }
+    
+    navContainer.innerHTML = html;
+
+
+}
+
+function populateSidebar(user){
+  if (!user) return;
+
+  displayUserName(user);
+  displayUserRole(user);
+
+  renderNavigationByRole(user.role, 'sidebarNav');
+}
+
+//Make functions global
+window.signOut = signOut;
+window.getToken = getToken;
+window.setToken = setToken;
+window.getUser = getUser;
+window.setUser = setUser;
+window.apiFetch = apiFetch;
+window.requireAuth = requireAuth;
+window.renderNavigationByRole = renderNavigationByRole;
+window.populateSidebar = populateSidebar;
+window.displayUserName = displayUserName;
+window.displayUserRole = displayUserRole;
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+  console.log('DOMContentLoaded - Initializing app...');
+
+  const user = await requireAuth();
+  if(user){
+    populateSidebar(user);
+  }
 
   // --- Mobile sidebar toggle ---
   const hamburger = document.querySelector('.hamburger');
@@ -156,8 +326,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const bell = document.querySelector('.notification-bell .btn-icon');
   if (bell) {
     bell.addEventListener('click', () => {
-      alert('Notifications panel would open here.\n\n• New message on "The Glass Garden"\n• "Urban Solitude" accepted\n• Submission confirmation sent');
+      alert('Notifications panel would open here.');
     });
   }
-
+  console.log('App initialization complete');
 });
